@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thumbnail -- Full Transparency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050910; --ink: #f4f6fb; --ink-dim: #8a97ad; --ink-mute: #4d5a70;
+    --cyan: #22d3ee; --amber: #fbbf24; --green: #34d399; --red: #f87171;
+  }
+  html, body { margin: 0; padding: 0; width: 1280px; height: 720px; overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+  .canvas { position: relative; width: 1280px; height: 720px; overflow: hidden; }
+  .grid { position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse at 70% 60%, black 10%, transparent 75%);
+    mask-image: radial-gradient(ellipse at 70% 60%, black 10%, transparent 75%); }
+  .glow { position: absolute; right: -140px; top: 80px; width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(52,211,153,0.10), transparent 65%); }
+
+  .wordmark { position: absolute; top: 46px; right: 76px; font-weight: 600; font-size: 24px;
+    letter-spacing: -0.02em; color: var(--ink); }
+  .wordmark .dot { color: var(--cyan); }
+
+  .eyebrow { position: absolute; left: 90px; top: 88px;
+    font-family: 'JetBrains Mono', monospace; font-size: 19px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--cyan); }
+  .eyebrow .sep { color: var(--ink-mute); margin: 0 10px; }
+  .eyebrow .lo { color: var(--ink-dim); }
+
+  .text-block { position: absolute; left: 88px; top: 162px; width: 640px; }
+  .line1 { font-weight: 600; font-size: 76px; letter-spacing: -0.04em; line-height: 1.0; white-space: nowrap; }
+  .line2 { font-weight: 800; font-size: 76px; letter-spacing: -0.045em; line-height: 1.0; margin-top: 8px; white-space: nowrap; }
+  .line2 .accent { color: var(--amber); }
+  .rule { width: 116px; height: 3px; background: var(--cyan); margin: 30px 0 22px; }
+  .sub { font-weight: 400; font-size: 26px; letter-spacing: -0.015em; color: var(--ink-dim);
+    max-width: 580px; line-height: 1.35; }
+  .sub strong { color: var(--ink); font-weight: 500; }
+
+  /* Comparison matrix card */
+  .card { position: absolute; right: 64px; top: 184px; width: 478px;
+    background: #0c1320; border: 1px solid rgba(255,255,255,0.10); border-radius: 12px;
+    box-shadow: 0 30px 80px -24px rgba(0,0,0,0.8); overflow: hidden; }
+  .head { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    padding: 12px 16px 10px; background: #0a0e18;
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--ink-mute); letter-spacing: 0.10em; text-transform: uppercase; }
+  .head .label { color: var(--ink-dim); font-weight: 600; }
+  .head .cap { text-align: center; }
+  .row { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    align-items: center; padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-family: 'JetBrains Mono', monospace; font-size: 15px; }
+  .row:last-child { border-bottom: none; }
+  .row .name { color: var(--ink-dim); font-weight: 600; }
+  .row .cell { text-align: center; font-weight: 700; font-size: 20px; }
+  .row .x { color: var(--red); opacity: 0.85; }
+  .row .v { color: var(--green); }
+  .row.us {
+    background: rgba(52,211,153,0.10);
+    border-top: 1px solid rgba(52,211,153,0.35);
+    border-bottom: 1px solid rgba(52,211,153,0.35);
+  }
+  .row.us .name { color: var(--ink); font-weight: 700; }
+
+  .tag { position: absolute; left: 90px; bottom: 52px;
+    font-family: 'JetBrains Mono', monospace; font-size: 16px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-mute); }
+  .tag b { color: var(--ink-dim); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="grid"></div>
+  <div class="glow"></div>
+
+  <div class="wordmark">OutcomeOps<span class="dot">.ai</span></div>
+  <div class="eyebrow">FULL TRANSPARENCY<span class="sep">·</span><span class="lo">INFOSEC + FINOPS</span></div>
+
+  <div class="text-block">
+    <div class="line1">No black boxes.</div>
+    <div class="line2">No <span class="accent">hidden fees.</span></div>
+    <div class="rule"></div>
+    <div class="sub">Refusals logged. Bedrock spend itemized. <strong>Every action audited</strong> — in your AWS account.</div>
+  </div>
+
+  <div class="card">
+    <div class="head">
+      <span class="label">&nbsp;</span>
+      <span class="cap">Refusal<br>alerts</span>
+      <span class="cap">Cost by<br>user</span>
+      <span class="cap">Audit<br>trail</span>
+    </div>
+    <div class="row">
+      <span class="name">Copilot</span>
+      <span class="cell x">&#10007;</span>
+      <span class="cell x">&#10007;</span>
+      <span class="cell x">&#10007;</span>
+    </div>
+    <div class="row">
+      <span class="name">Cursor</span>
+      <span class="cell x">&#10007;</span>
+      <span class="cell x">&#10007;</span>
+      <span class="cell x">&#10007;</span>
+    </div>
+    <div class="row">
+      <span class="name">Claude.ai</span>
+      <span class="cell x">&#10007;</span>
+      <span class="cell x">&#10007;</span>
+      <span class="cell x">&#10007;</span>
+    </div>
+    <div class="row us">
+      <span class="name">OutcomeOps</span>
+      <span class="cell v">&#10003;</span>
+      <span class="cell v">&#10003;</span>
+      <span class="cell v">&#10003;</span>
+    </div>
+  </div>
+
+  <div class="tag"><b>DEMO</b> · GOVERNANCE FOR ENTERPRISE AI</div>
+</div>
+</body>
+</html>

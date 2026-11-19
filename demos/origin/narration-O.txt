@@ -1,0 +1,81 @@
+[0.00s — o1_provocation]
+DevOps is dead. Not because the ideas were wrong — because
+the implementation lost the plot. We measured deployments
+instead of value, motion instead of progress. Most companies
+missed it. AI is now becoming the new waste.
+
+[18.00s — o2_first_commit]
+August eighteenth, twenty-twelve. First commit. A Python
+script called A W S deploy. Pearson's CIO had given a simple
+directive: take us to the cloud. Three months later, that
+script had a name. Nibiru. A self-service platform. Seventy
+development teams across three regions were deploying without
+opening a ticket. The configuration was opinionated. The
+naming convention was queryable. The standards were
+structural — not documents, infrastructure. The platform
+carried the institutional memory.
+
+[55.00s — o3_pattern]
+Then I built the same product four more times. Aetna,
+twenty-fourteen: golden pipelines. Zero point zero five
+percent security defect density when the enterprise average
+was five percent. The CISO made Docker a corporate mandate.
+Liberty Mutual, twenty-sixteen: Fusion — Docker's leading case study. Comcast,
+twenty-nineteen: a platform called SEED. Zero Terraform
+required. Dev to prod in minutes. Gilead Sciences,
+twenty-twenty-two: full AWS transformation. Fifty-five
+engineers. The CIO's re:Invent keynote. Early access to
+Bedrock. Same problem every time. Same solution every time.
+The tools change. The failure mode doesn't.
+
+[90.00s — o4_four_phases]
+Every platform shift goes through four phases. Individual
+productivity. Local optimization. The reckoning. And finally,
+organizational intelligence wins. The teams that win are
+never the ones who adopted the tools first. They're the ones
+who encoded their organizational knowledge into the tooling
+layer. Make the right path the easy path. Replace gatekeepers
+with guardrails.
+
+[115.00s — o5_phase_three_now]
+AI is in Phase 3 right now. Every team writing prompts. Every
+team reinventing context injection. Vibe coding looks good in
+Reels. It doesn't ship. AI hallucinates patterns nobody
+approved. Production incidents. Compliance violations.
+Downstream engineers cleaning up after the people who weren't
+in the LinkedIn posts. The tools changed. The failure mode
+didn't.
+
+[135.00s — o6_answer]
+OutcomeOps is Nibiru, fourteen years later, one abstraction
+layer up. Architecture Decision Records become queryable.
+Code-maps make the codebase reason about itself. AI doesn't
+guess. It queries your standards, your patterns, your
+compliance requirements before generating a single line.
+Documentation is the runtime. Code is the execution layer
+beneath it. We replaced the org chart with a knowledge graph.
+The platform carries the institutional memory. Same idea.
+Different layer.
+
+[165.00s — o7_convergence]
+December twenty-twenty-five. Anthropic told the world to
+build skills, not agents. We'd been shipping Architecture
+Decision Records at Fortune five hundred scale since mid
+twenty-twenty-five. February twenty-twenty-six. Cory
+Ondrejka — the engineer who saved Meta — published a
+manifesto called Outcome Engineering. We'd been building the
+implementation since July. Independent convergence. Different
+practitioners. Different angles. Same conclusion.
+
+[185.00s — o8_numbers]
+Sixteen-hour tasks complete in twenty minutes. First-time
+approval rate: ninety percent. Cost per feature: two dollars
+and twenty-four cents. Ninety Lambda functions, built solo,
+in one hundred twenty days. Six days from domain registration
+to paying customers when we shipped RetrieveIt dot A I.
+Production data. Not whitepapers.
+
+[205.00s — o9_cta]
+The pattern keeps repeating. The choice is the same as it
+always was. Encode the knowledge. Or watch a competitor that
+did. OutcomeOps dot A I.

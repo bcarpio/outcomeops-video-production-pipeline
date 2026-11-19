@@ -1,0 +1,49 @@
+[0.00s — t1_hook]
+Full transparency. No black boxes. No hidden fees.
+Just data.
+
+[10.00s — t2_deployment]
+OutcomeOps deploys into your AWS account via Terraform.
+Your account. Your IAM. Your customer-managed keys,
+automatically rotated. The entire platform — deployable
+in a single command, ownable from day one.
+
+[25.00s — t3_data]
+Bedrock runs in your region. Your prompts and your code
+never leave your account. No training on your data.
+No egress. No shadow cache. The model can't remember
+what it never saw.
+
+[40.00s — t4_audit]
+Every action in the platform is logged. Workspaces
+created. Budgets updated. System prompts changed.
+Members added. Each event captures timestamp, actor, IP.
+When a user asks for something malicious — for instance,
+a prompt asking for data-exfiltration tooling — the
+system refuses. The refusal is logged and flagged. But
+it's not just refusals. Every input and every output is
+captured for full auditability.
+
+[65.00s — t5_analytics]
+Every dollar of Bedrock spend, broken down. By workspace.
+By model. By user. No markup. You pay AWS directly for
+Bedrock usage. We don't take a cut. Haiku for cost
+optimization. Sonnet for the harder problems. Visible —
+to the cent.
+
+[85.00s — t6_refusal]
+When the AI refuses a request, you know in real time.
+SNS pushes the alert: timestamp, user, workspace, IP.
+The input that triggered it. The output that refused.
+
+[100.00s — t7_difference]
+Copilot doesn't log refusals. Cursor doesn't alert on
+refusals or cost anomalies. Claude.ai doesn't give you
+enterprise audit trails. OutcomeOps does all three.
+
+[110.00s — t8_cta]
+No black boxes. No hidden fees. Just full transparency.
+Talk to our team.
+
+[117.00s — t9_lockup]
+OutcomeOps dot A I.
