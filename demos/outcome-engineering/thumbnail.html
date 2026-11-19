@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thumbnail — Outcome Engineering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050910;
+    --ink: #f4f6fb;
+    --ink-dim: #8a97ad;
+    --cyan: #22d3ee;
+  }
+  html, body {
+    margin: 0; padding: 0;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  .canvas {
+    position: relative;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+    padding: 96px 96px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 180px;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
+    color: var(--ink);
+  }
+  .title .accent { color: var(--cyan); }
+
+  .rule {
+    width: 120px;
+    height: 2px;
+    background: var(--cyan);
+    margin: 56px 0 40px;
+  }
+
+  .sub {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 40px;
+    letter-spacing: -0.018em;
+    color: var(--ink-dim);
+  }
+  .sub strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .wordmark {
+    position: absolute;
+    bottom: 56px; right: 96px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .wordmark .dot { color: var(--cyan); }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="title">Outcome</div>
+  <div class="title">Engineering<span class="accent">.</span></div>
+  <div class="rule"></div>
+  <div class="sub">The role replacing <strong>DevOps.</strong></div>
+
+  <div class="wordmark">OutcomeOps<span class="dot">.ai</span></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+[0.00s — b1_alert]
+A security engineer gets a CVE alert late Friday afternoon —
+cross-site scripting in react-router, a library in nearly every
+modern web app.
+
+[10.45s — b2_question]
+They need to know, right now, which applications in the portfolio
+are affected, and in what order to patch.
+
+[16.50s — b3_depth]
+For this question they don't need reasoning — they need coverage.
+They bump the depth from 5 to 30: pull every package manifest,
+every lockfile, across every repo.
+
+[26.77s — b4_search]
+OutcomeOps runs a portfolio-wide retrieval. Thirty semantically-
+matched documents surface — package files, lockfiles, dependency
+graphs — all from the knowledge base.
+
+[37.59s — b5_found]
+Three applications have react-router installed. OutcomeOps
+identifies the version running in each.
+
+[43.59s — b6_vuln]
+Two are on vulnerable releases — version 7.11 and 7.10. The
+third needs manual verification.
+
+[51.77s — b7_priority]
+The response ranks them by impact. The customer-facing portal
+patches first — user sessions, uploads, billing data on the line.
+Analytics second. The internal tool gets verified before close
+of day.
+
+[65.06s — b8_commands]
+Each priority comes with the exact upgrade command. Ready to
+copy, execute, and merge.
+
+[71.44s — b9_OI]
+Thirty matches across every repo. Three apps identified. A patch
+plan ready to merge. This is organizational intelligence — your
+code, everywhere, queryable in plain language.
+
+---
+Source SSML: narration.ssml
+Speech marks: narration.marks.json
+Voice: ElevenLabs Drew (q0IMILNRPxOgtBTS4taI), eleven_multilingual_v2
+Settings: stability=0.72, similarity_boost=0.75, style=0.0, speaker_boost=true, speed=1.0
+Style: observational third-person narrator (see CLAUDE.md)
+Total audio: 83.3s  |  Stage duration: 85s

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thumbnail -- OutcomeOps as a Kiro Power</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050910;
+    --ink: #f4f6fb;
+    --ink-dim: #8a97ad;
+    --ink-mute: #4d5a70;
+    --cyan: #22d3ee;
+    --amber: #fbbf24;
+    --kiro: #a78bfa;
+    --green: #34d399;
+    --red: #f87171;
+  }
+  html, body {
+    margin: 0; padding: 0;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  .canvas { position: relative; width: 1280px; height: 720px; overflow: hidden; }
+
+  /* faint grid wash */
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse at 70% 60%, black 10%, transparent 75%);
+    mask-image: radial-gradient(ellipse at 70% 60%, black 10%, transparent 75%);
+  }
+  .glow {
+    position: absolute; right: -120px; top: 120px;
+    width: 720px; height: 720px;
+    background: radial-gradient(circle, rgba(34,211,238,0.10), transparent 65%);
+  }
+
+  .wordmark {
+    position: absolute; top: 46px; right: 76px;
+    font-weight: 600; font-size: 24px; letter-spacing: -0.02em; color: var(--ink);
+  }
+  .wordmark .dot { color: var(--cyan); }
+
+  .eyebrow {
+    position: absolute; left: 90px; top: 88px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 19px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .eyebrow .kiro { color: var(--kiro); }
+  .eyebrow .sep { color: var(--ink-mute); margin: 0 10px; }
+  .eyebrow .oo { color: var(--cyan); }
+
+  .text-block { position: absolute; left: 88px; top: 156px; width: 640px; }
+  .line1 { font-weight: 600; font-size: 76px; letter-spacing: -0.04em; line-height: 1.0; white-space: nowrap; }
+  .line2 { font-weight: 800; font-size: 76px; letter-spacing: -0.045em; line-height: 1.0; margin-top: 8px; white-space: nowrap; }
+  .line2 .accent { color: var(--amber); }
+  .rule { width: 116px; height: 3px; background: var(--cyan); margin: 30px 0 22px; }
+  .sub { font-weight: 400; font-size: 27px; letter-spacing: -0.015em; color: var(--ink-dim); max-width: 580px; line-height: 1.35; }
+  .sub strong { color: var(--ink); font-weight: 500; }
+
+  /* Right-side diff card: the float -> Decimal transformation */
+  .card {
+    position: absolute; right: 72px; top: 232px;
+    width: 452px;
+    background: #0c1320;
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 12px;
+    box-shadow: 0 30px 80px -24px rgba(0,0,0,0.8);
+    overflow: hidden;
+  }
+  .card .bar {
+    display: flex; align-items: center; gap: 9px;
+    padding: 12px 16px; background: #0a0e18; border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--ink-dim);
+  }
+  .card .bar .kdot { width: 10px; height: 10px; border-radius: 50%; background: var(--kiro); box-shadow: 0 0 10px var(--kiro); }
+  .card .body { padding: 8px 0; font-family: 'JetBrains Mono', monospace; font-size: 18px; }
+  .row { display: flex; align-items: center; gap: 12px; padding: 9px 16px; }
+  .row .mark { width: 16px; font-weight: 700; text-align: center; }
+  .row.del { background: rgba(248,113,113,0.10); }
+  .row.del .mark { color: var(--red); }
+  .row.del code { color: #c98a8a; }
+  .row.add { background: rgba(52,211,153,0.10); }
+  .row.add .mark { color: var(--green); }
+  .row code { color: #cbd5e1; flex: 1; white-space: nowrap; }
+  .row code .kw { color: #c586c0; }
+  .row code .ty { color: #4ec9b0; }
+  .row code .fn { color: #dcdcaa; }
+  .chip {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+    padding: 3px 8px; border-radius: 5px; white-space: nowrap;
+  }
+  .chip.adr { color: var(--cyan); background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.4); }
+  .chip.iso { color: var(--green); background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.4); }
+
+  /* bottom-left tag */
+  .tag {
+    position: absolute; left: 90px; bottom: 52px;
+    font-family: 'JetBrains Mono', monospace; font-size: 16px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-mute);
+  }
+  .tag b { color: var(--ink-dim); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="grid"></div>
+  <div class="glow"></div>
+
+  <div class="wordmark">OutcomeOps<span class="dot">.ai</span></div>
+
+  <div class="eyebrow"><span class="kiro">AWS KIRO</span><span class="sep">+</span><span class="oo">OUTCOMEOPS</span><span class="sep">·</span>MCP</div>
+
+  <div class="text-block">
+    <div class="line1">Make Kiro follow</div>
+    <div class="line2"><span class="accent">your</span> standards.</div>
+    <div class="rule"></div>
+    <div class="sub">Spec-driven code, grounded in <strong>your own ADRs and ISO controls</strong> — over MCP.</div>
+  </div>
+
+  <!-- Diff card: local draft -> governed by the Power -->
+  <div class="card">
+    <div class="bar"><span class="kdot"></span>refund_handler.py</div>
+    <div class="body">
+      <div class="row del"><span class="mark">-</span><code>amount = <span class="ty">float</span>(body[...])</code></div>
+      <div class="row add"><span class="mark">+</span><code>amount: <span class="ty">Decimal</span></code><span class="chip adr">ADR-009</span></div>
+      <div class="row add"><span class="mark">+</span><code>masked = <span class="fn">mask_pan</span>(card)</code><span class="chip iso">A.8.11</span></div>
+      <div class="row add"><span class="mark">+</span><code>logger.info(<span class="fn">audit</span>)</code><span class="chip iso">A.8.15</span></div>
+    </div>
+  </div>
+
+  <div class="tag"><b>INTEGRATION</b> · SPEC-DRIVEN IDE + CONTEXT ENGINEERING</div>
+
+</div>
+</body>
+</html>

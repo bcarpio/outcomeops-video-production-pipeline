@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OutcomeOps — Marketing Video</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #050505; overflow: hidden; font-family: 'Inter', system-ui, sans-serif; color: #f4f6fb; }
+  #root { position: fixed; inset: 0; }
+  .tweaks {
+    position: fixed; right: 16px; bottom: 60px;
+    background: rgba(10,17,29,0.96);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 18px 20px;
+    z-index: 10000;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #f4f6fb;
+    min-width: 260px;
+    letter-spacing: 0.06em;
+    display: none;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+  }
+  .tweaks.open { display: block; }
+  .tweaks .h { color: #22d3ee; font-size: 11px; letter-spacing: 0.24em; margin-bottom: 14px; }
+  .tweaks .row { margin-bottom: 14px; }
+  .tweaks label { display: block; font-size: 10px; letter-spacing: 0.18em; color: #8a97ad; margin-bottom: 8px; text-transform: uppercase; }
+  .tweaks .seg {
+    display: flex; gap: 0;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 4px; overflow: hidden;
+  }
+  .tweaks .seg button {
+    flex: 1; padding: 8px 10px;
+    background: transparent; color: #8a97ad;
+    border: none; border-right: 1px solid rgba(255,255,255,0.08);
+    font-family: inherit; font-size: 11px; letter-spacing: 0.14em;
+    cursor: pointer; text-transform: uppercase;
+  }
+  .tweaks .seg button:last-child { border-right: none; }
+  .tweaks .seg button.active { background: #22d3ee; color: #050910; }
+  .tweaks .seg button:hover:not(.active) { background: rgba(255,255,255,0.04); color: #f4f6fb; }
+  .tweaks .swatches { display: flex; gap: 8px; }
+  .tweaks .swatch {
+    width: 32px; height: 32px; border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.15); cursor: pointer;
+    position: relative;
+  }
+  .tweaks .swatch.active::after {
+    content: ''; position: absolute; inset: -3px;
+    border: 1px solid #fff; border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<div id="tweaks" class="tweaks">
+  <div class="h">TWEAKS</div>
+  <div class="row">
+    <label>Variation</label>
+    <div class="seg" id="seg-variation">
+      <button data-v="A" class="active">A — IP Exfil</button>
+      <button data-v="B">B — Org Intel</button>
+      <button data-v="C">C — Manifesto</button>
+      <button data-v="G">G — One Day</button>
+    </div>
+  </div>
+  <div class="row">
+    <label>Accent color</label>
+    <div class="swatches" id="swatches">
+      <div class="swatch active" data-c="#22d3ee" style="background:#22d3ee"></div>
+      <div class="swatch" data-c="#a3e635" style="background:#a3e635"></div>
+      <div class="swatch" data-c="#f472b6" style="background:#f472b6"></div>
+      <div class="swatch" data-c="#fbbf24" style="background:#fbbf24"></div>
+      <div class="swatch" data-c="#c084fc" style="background:#c084fc"></div>
+    </div>
+  </div>
+  <div class="row">
+    <label>Corner marks</label>
+    <div class="seg" id="seg-marks">
+      <button data-m="on" class="active">On</button>
+      <button data-m="off">Off</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="animations.jsx"></script>
+<script type="text/babel" src="scenes-shared.jsx"></script>
+<script type="text/babel" src="variation-a.jsx"></script>
+<script type="text/babel" src="variation-b.jsx"></script>
+<script type="text/babel" src="variation-c.jsx"></script>
+<script type="text/babel" src="variation-g.jsx"></script>
+
+<script>
+  // URL-param-driven variant selection + export mode
+  const params = new URLSearchParams(location.search);
+  const v = params.get('variation');
+  const variation = (v === 'A' || v === 'B' || v === 'C' || v === 'G') ? v : 'B';
+  const isExport = params.get('export') === '1';
+
+  window.__OO_TWEAKS = {
+    variation,
+    accent: '#22d3ee',
+    marks: isExport ? 'off' : 'on',
+  };
+  window.__OO_EXPORT = isExport;
+
+  // Hide the Designer tweaks panel in export mode
+  if (isExport) document.getElementById('tweaks').style.display = 'none';
+</script>
+
+<script type="text/babel">
+  function App() {
+    const t = window.__OO_TWEAKS;
+    const isExport = window.__OO_EXPORT;
+    window.OO_COLORS.cyan = t.accent;
+
+    const config = {
+      A: { Variation: VariationA, duration: 46, audio: 'narration-A.mp3' },
+      B: { Variation: VariationB, duration: 46, audio: 'narration-B.mp3' },
+      C: { Variation: VariationC, duration: 32, audio: 'narration-C-padded.mp3' },
+      G: { Variation: VariationG, duration: 42, audio: 'narration-G-padded.mp3' },
+    }[t.variation];
+
+    const cacheBust = Date.now();
+    const audioSrc = config.audio ? config.audio + '?v=' + cacheBust : null;
+
+    return (
+      <Stage
+        width={1920} height={1080} duration={config.duration}
+        background={OO_COLORS.bg}
+        persistKey={isExport ? `oo-${t.variation}-export` : `oo-${t.variation}`}
+        hideBar={isExport}
+        loop={!isExport}
+      >
+        <config.Variation/>
+        {audioSrc && <AudioTrack src={audioSrc}/>}
+      </Stage>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

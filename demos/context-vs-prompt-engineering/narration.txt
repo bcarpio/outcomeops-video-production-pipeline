@@ -1,0 +1,24 @@
+[0.00s — s1_hook]
+What's the difference between prompt engineering and context engineering?
+They're both real. They're not the same.
+
+[8.00s — s2_prompt]
+Prompt engineering is the instructions you give to a model. Pick the
+right verbs. Give examples. Structure the output. It's a skill. It
+scales with the person typing.
+
+[20.00s — s3_local]
+Context engineering is what surrounds the prompt. Most of what people
+call it today — Anthropic Skills, OpenSpec, GitHub Spec Kit — solves
+it locally. A few repos. A small team. One greenfield project. I call
+that the local optimization trap.
+
+[35.00s — s4_systemic]
+Real context engineering scales above the repo. Architecture decision
+records — encoded. Code maps — queryable. Decades of legacy code —
+Java, dot net, Python, even A B A P — all of it grounded. The AI
+doesn't have to be told how your organization works. It already knows.
+
+[50.00s — s5_cta]
+Local optimization is a skill. Systemic context engineering is a system.
+Built for the systemic layer. OutcomeOps dot A I.

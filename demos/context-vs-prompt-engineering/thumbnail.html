@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thumbnail — Context Engineering vs Prompt Engineering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050910;
+    --ink: #f4f6fb;
+    --ink-dim: #8a97ad;
+    --cyan: #22d3ee;
+    --amber: #fbbf24;
+  }
+  html, body {
+    margin: 0; padding: 0;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  .canvas {
+    position: relative;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+    padding: 80px 96px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .prompt {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 108px;
+    letter-spacing: -0.04em;
+    line-height: 1.0;
+    color: var(--ink-dim);
+  }
+
+  .vs {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 72px;
+    letter-spacing: -0.02em;
+    line-height: 1.0;
+    color: var(--amber);
+    margin: 32px 0 32px;
+  }
+
+  .context {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 108px;
+    letter-spacing: -0.045em;
+    line-height: 1.0;
+    color: var(--ink);
+  }
+  .context .accent { color: var(--cyan); }
+
+  .wordmark {
+    position: absolute;
+    bottom: 48px; right: 80px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .wordmark .dot { color: var(--cyan); }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="prompt">Prompt engineering.</div>
+  <div class="vs">vs.</div>
+  <div class="context"><span class="accent">Context</span> engineering.</div>
+
+  <div class="wordmark">OutcomeOps<span class="dot">.ai</span></div>
+</div>
+</body>
+</html>

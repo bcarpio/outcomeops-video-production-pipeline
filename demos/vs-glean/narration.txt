@@ -1,0 +1,20 @@
+[[B0]]
+Ask an enterprise search platform an engineering question, and it finds you the document. Ask OutcomeOps, and it ships the fix.
+
+[[B1]]
+Search returns the documents your team wrote about P C I, and the policy says you're compliant. OutcomeOps ingested that same policy, then read the payment service itself. The code disagrees. Tokenization is drifting in the charge handler, so it points to the control and opens a pull request. When the document and the code disagree, the code wins.
+
+[[B2]]
+Ask where an application breaks your architecture design patterns, and search points you to the design docs and the old discussions. OutcomeOps walks the code-maps and the code knowledge graph, and names the exact files that deviate. Here, the ingest path is bypassing the payment gateway.
+
+[[B3]]
+And in a regulated environment, none of this matters if the code has to leave. Enterprise search indexes your source in the vendor's cloud. For regulated teams, that's a non-starter. OutcomeOps is deployed in your own cloud. The code never leaves your account.
+
+[[B4]]
+When the auditor asks how it knows, search offers a confidence score. OutcomeOps cites the exact standard behind every answer. An audit trail, not a promise.
+
+[[B5]]
+Enterprise search finds what's already been written. OutcomeOps grounds the agents that write what's next, in your standards, and your own cloud.
+
+[[CTA]]
+The organizational intelligence layer every team can query. OutcomeOps dot A I.

@@ -1,0 +1,27 @@
+[0.00s — b1_provoke]
+Every keystroke your engineers send to Copilot, Cursor, or ChatGPT is
+a round trip to someone else's datacenter.
+
+[7.46s — b2_what]
+Pricing engines. Patient data. Claims processors. Logged, cached,
+used to train the models that answer your competitors.
+
+[15.57s — b3_bill]
+HIPAA. SOX. GDPR. FedRAMP. "Accept all" was the wrong button.
+
+[21.03s — b4_pivot]
+So we built it differently.
+
+[22.36s — b5_arch]
+OutcomeOps runs inside your AWS account — your Bedrock, your keys,
+your logs. No egress, no shadow cache, no training on your code.
+
+[31.16s — b6_numbers]
+One hundred percent of prompts, in-tenant. Zero bytes out. Fifteen
+times the velocity of offshore baseline.
+
+[37.28s — b7_point]
+Your leverage is your code. Stop giving it away.
+
+[40.24s — b8_cta]
+Schedule an enterprise briefing at OutcomeOps dot A I today.

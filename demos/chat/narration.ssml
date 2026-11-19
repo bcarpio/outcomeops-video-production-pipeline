@@ -1,0 +1,21 @@
+<speak>
+<break time="2s"/>
+<mark name="beat1_ask"/>
+An engineer asks OutcomeOps a question grounded in their own architecture.
+<break time="1200ms"/>
+<mark name="beat2_search"/>
+Workspaces narrow the scope. <say-as interpret-as="characters">MCP</say-as> servers attach. The knowledge base searches six repos.
+<break time="800ms"/>
+<mark name="beat3_grounded"/>
+The answer comes back grounded — citing A D R zero zero one for error handling, A D R zero zero six for Python patterns. Pydantic validation. Structured audit events. Typed responses.
+<break time="400ms"/>
+<mark name="beat4_code"/>
+Then the actual handler — written to your patterns, not generic Lambda boilerplate.
+<break time="500ms"/>
+<mark name="beat5_sources"/>
+Every claim links back to source. Six results from your code-maps and A D Rs, reranked by Cohere. About four-tenths of a cent for the round trip.
+<break time="4s"/>
+<mark name="beat6_next"/>
+Next question's already queued — tests for that handler, matching A D R zero zero five.
+<break time="2s"/>
+</speak>

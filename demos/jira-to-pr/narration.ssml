@@ -1,0 +1,36 @@
+<speak>
+<break time="1500ms"/>
+<mark name="b1_promise"/>
+Sixteen hours of engineering work, finished in twelve minutes. Here's how.
+<break time="1500ms"/>
+<mark name="b2_ticket"/>
+An engineer defines the outcome in Jira — the user story, acceptance criteria. One label hands it to OutcomeOps.
+<break time="1s"/>
+<mark name="b3_webhook"/>
+Jira fires an automation rule. An SSM document invokes the generation Lambda — entirely inside the customer's AWS account.
+<break time="1s"/>
+<mark name="b4_rag"/>
+The Lambda queries the team's knowledge base. Vector search plus Cohere rerank picks the top ADRs for context.
+<break time="1s"/>
+<mark name="b5_plan"/>
+OutcomeOps writes a plan — eight atomic steps, each bound to specific files and ADRs. The plan itself is committed to the branch.
+<break time="1s"/>
+<mark name="b6a_loop"/>
+The plan feeds itself through SQS. One step, one Lambda. Generate. Write. Enqueue the next.
+<break time="4s"/>
+<mark name="b6b_norunner"/>
+No orchestrator. No conductor. Just a queue, a worker, and a plan.
+<break time="3s"/>
+<mark name="b6c_files"/>
+Eight steps later: models, handler, infrastructure, tests — each written to the team's standards.
+<break time="1s"/>
+<mark name="b7_pr"/>
+Eight files. Three hundred forty-two lines. One pull request, signed by the bot.
+<break time="1s"/>
+<mark name="b8_analyzer"/>
+A second RAG pass. The analyzer re-queries the same ADRs and validates the generated code. Six checks pass, before a human looks at it.
+<break time="1s"/>
+<mark name="b9_close"/>
+Sixteen hours of engineering, done in twelve minutes — for a dollar seventeen. Context engineered.
+<break time="2s"/>
+</speak>

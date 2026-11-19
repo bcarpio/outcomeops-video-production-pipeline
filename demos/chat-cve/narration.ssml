@@ -1,0 +1,30 @@
+<speak>
+<break time="2s"/>
+<mark name="b1_alert"/>
+A security engineer gets a C V E alert late Friday afternoon — cross-site scripting in react-router, a library in nearly every modern web app.
+<break time="1500ms"/>
+<mark name="b2_question"/>
+They need to know, right now, which applications in the portfolio are affected, and in what order to patch.
+<break time="1500ms"/>
+<mark name="b3_depth"/>
+For this question they don't need reasoning — they need coverage. They bump the depth from 5 to 30: pull every package manifest, every lockfile, across every repo.
+<break time="2s"/>
+<mark name="b4_search"/>
+OutcomeOps runs a portfolio-wide retrieval. Thirty semantically-matched documents surface — package files, lockfiles, dependency graphs — all from the knowledge base.
+<break time="1500ms"/>
+<mark name="b5_found"/>
+Three applications have react-router installed. OutcomeOps identifies the version running in each.
+<break time="1500ms"/>
+<mark name="b6_vuln"/>
+Two are on vulnerable releases — version 7.11 and 7.10. The third needs manual verification.
+<break time="2s"/>
+<mark name="b7_priority"/>
+The response ranks them by impact. The customer-facing portal patches first — user sessions, uploads, billing data on the line. Analytics second. The internal tool gets verified before close of day.
+<break time="1500ms"/>
+<mark name="b8_commands"/>
+Each priority comes with the exact upgrade command. Ready to copy, execute, and merge.
+<break time="1500ms"/>
+<mark name="b9_OI"/>
+Thirty matches across every repo. Three apps identified. A patch plan ready to merge. This is organizational intelligence — your code, everywhere, queryable in plain language.
+<break time="2s"/>
+</speak>

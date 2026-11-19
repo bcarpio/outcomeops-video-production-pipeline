@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thumbnail -- Impact Analysis with GKG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050910;
+    --ink: #f4f6fb;
+    --ink-dim: #8a97ad;
+    --ink-mute: #4d5a70;
+    --cyan: #22d3ee;
+    --amber: #fbbf24;
+  }
+  html, body {
+    margin: 0; padding: 0;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  .canvas {
+    position: relative;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+  }
+
+  /* Top-right wordmark */
+  .wordmark {
+    position: absolute;
+    top: 48px; right: 80px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .wordmark .dot { color: var(--cyan); }
+
+  /* Hero text — pinned to upper portion so the bottom-left is free for the graph */
+  .text-block {
+    position: absolute;
+    left: 96px;
+    right: 96px;
+    top: 130px;
+  }
+  .line1 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 108px;
+    letter-spacing: -0.04em;
+    line-height: 1.0;
+    color: var(--ink);
+  }
+  .line2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 108px;
+    letter-spacing: -0.045em;
+    line-height: 1.0;
+    color: var(--ink);
+    margin-top: 8px;
+  }
+  .line2 .accent { color: var(--amber); }
+
+  .rule {
+    width: 120px;
+    height: 2px;
+    background: var(--cyan);
+    margin: 32px 0 24px;
+  }
+
+  .sub {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 30px;
+    letter-spacing: -0.015em;
+    color: var(--ink-dim);
+    max-width: 800px;
+  }
+  .sub strong { color: var(--ink); font-weight: 500; }
+
+  /* Bottom-left small graph diagram */
+  .graph {
+    position: absolute;
+    left: 80px;
+    bottom: 56px;
+    width: 420px;
+    height: 200px;
+  }
+  .graph svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .gnode {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    padding: 5px 9px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    border-radius: 3px;
+  }
+  .gnode.hub {
+    background: var(--cyan);
+    color: #050910;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 6px 11px;
+    box-shadow: 0 0 18px rgba(34, 211, 238, 0.45);
+  }
+  .gnode.direct {
+    background: rgba(34, 211, 238, 0.06);
+    border: 1.2px solid var(--cyan);
+    color: var(--cyan);
+  }
+  .gnode.tx {
+    background: transparent;
+    border: 1px solid var(--ink-mute);
+    color: var(--ink-dim);
+    font-size: 10px;
+    padding: 4px 7px;
+  }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <!-- Top-right wordmark -->
+  <div class="wordmark">OutcomeOps<span class="dot">.ai</span></div>
+
+  <!-- Hero text -->
+  <div class="text-block">
+    <div class="line1">What would break</div>
+    <div class="line2">if I <span class="accent">remove this?</span></div>
+    <div class="rule"></div>
+    <div class="sub">Live impact analysis with a <strong>code knowledge graph.</strong></div>
+  </div>
+
+  <!-- Bottom-left mini graph diagram: hub at left, callers fanning right -->
+  <div class="graph">
+    <!-- SVG layer for edges -->
+    <svg viewBox="0 0 420 200" preserveAspectRatio="xMidYMid meet">
+      <!-- Hub to 3 direct callers (dashed cyan) -->
+      <line x1="80"  y1="100" x2="230" y2="30"  stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="5 3" opacity="0.7"/>
+      <line x1="80"  y1="100" x2="230" y2="100" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="5 3" opacity="0.7"/>
+      <line x1="80"  y1="100" x2="230" y2="170" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="5 3" opacity="0.7"/>
+      <!-- Direct callers to transitive (dimmer) -->
+      <line x1="230" y1="30"  x2="370" y2="20"  stroke="#8a97ad" stroke-width="1"   stroke-dasharray="3 3" opacity="0.45"/>
+      <line x1="230" y1="30"  x2="370" y2="55"  stroke="#8a97ad" stroke-width="1"   stroke-dasharray="3 3" opacity="0.45"/>
+      <line x1="230" y1="100" x2="370" y2="100" stroke="#8a97ad" stroke-width="1"   stroke-dasharray="3 3" opacity="0.45"/>
+      <line x1="230" y1="170" x2="370" y2="148" stroke="#8a97ad" stroke-width="1"   stroke-dasharray="3 3" opacity="0.45"/>
+      <line x1="230" y1="170" x2="370" y2="180" stroke="#8a97ad" stroke-width="1"   stroke-dasharray="3 3" opacity="0.45"/>
+    </svg>
+
+    <!-- Hub at left -->
+    <div class="gnode hub" style="left: 80px; top: 100px;">validateCardToken</div>
+
+    <!-- Direct callers (middle column) -->
+    <div class="gnode direct" style="left: 230px; top: 30px;">payments</div>
+    <div class="gnode direct" style="left: 230px; top: 100px;">admin</div>
+    <div class="gnode direct" style="left: 230px; top: 170px;">refunds</div>
+
+    <!-- Transitive callers (right column, dim) -->
+    <div class="gnode tx" style="left: 370px; top: 20px;">charge.go</div>
+    <div class="gnode tx" style="left: 370px; top: 55px;">refund.go</div>
+    <div class="gnode tx" style="left: 370px; top: 100px;">audit.go</div>
+    <div class="gnode tx" style="left: 370px; top: 148px;">dispute.go</div>
+    <div class="gnode tx" style="left: 370px; top: 180px;">retry.go</div>
+  </div>
+
+</div>
+</body>
+</html>

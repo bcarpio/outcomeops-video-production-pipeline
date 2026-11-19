@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thumbnail -- RAG vs Code Knowledge Graph</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050910;
+    --ink: #f4f6fb;
+    --ink-dim: #8a97ad;
+    --cyan: #22d3ee;
+    --amber: #fbbf24;
+  }
+  html, body {
+    margin: 0; padding: 0;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  .canvas {
+    position: relative;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+    padding: 80px 96px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .everywhere {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 108px;
+    letter-spacing: -0.04em;
+    line-height: 1.0;
+    color: var(--ink-dim);
+  }
+
+  .good {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 48px;
+    letter-spacing: -0.02em;
+    line-height: 1.0;
+    color: var(--ink-dim);
+    margin: 38px 0 38px;
+  }
+
+  .blind {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 108px;
+    letter-spacing: -0.045em;
+    line-height: 1.0;
+    color: var(--ink);
+  }
+  .blind .accent { color: var(--amber); }
+
+  .wordmark {
+    position: absolute;
+    bottom: 48px; right: 80px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .wordmark .dot { color: var(--cyan); }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="everywhere">RAG is everywhere.</div>
+  <div class="good">It's good.</div>
+  <div class="blind">But it has a <span class="accent">blind spot.</span></div>
+
+  <div class="wordmark">OutcomeOps<span class="dot">.ai</span></div>
+</div>
+</body>
+</html>

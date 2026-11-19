@@ -1,0 +1,1 @@
+A product owner is scoping next quarter. What can billing already do, and what’s missing? The old way: pull an engineer into the code, or trust a P R D that’s months out of date. Now they ask. OutcomeOps reads what’s actually shipped, finds the gaps, and drafts the stories to close them. The backlog writes itself, from the real system, not a document.

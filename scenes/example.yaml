@@ -1,0 +1,45 @@
+# Sample scene — generates a narrated walkthrough of the OutcomeOps
+# Analytics dashboard. Edit URL, narration_prompt, and interactions to
+# match your own.
+
+name: analytics-dashboard
+url: https://outcomeops.outcomeops.ai/analytics
+
+viewport:
+  width: 1920
+  height: 1080
+
+# Target length the narration aims for (Claude calibrates word count to
+# this). Audio length still wins — the recorder matches whatever Polly
+# actually produces.
+target_seconds: 30
+
+# Let Claude write the narration from the brand context plus this prompt.
+# Replace with `narration: |` (verbatim text) if you'd rather write it
+# yourself and skip the Claude step.
+narration_prompt: |
+  Open with the total cost number on screen. Establish that this is
+  real-time AI spend visibility for the whole org — broken down by
+  workspace, by user, by model. Mention that org admins can set
+  per-workspace monthly budgets and get SNS alerts when one crosses
+  its threshold. Close by noting this is the same data Bedrock writes
+  to CloudWatch, but actionable.
+
+# Optional voice override (default: Joanna). Other good Neural picks:
+# Matthew, Stephen, Joanna, Ruth.
+voice: Joanna
+
+# Browser interactions while the audio plays. Each step is one of:
+#   { wait_for: "selector", timeout: 5000 }
+#   { wait: 3 }
+#   { click: "selector" }
+#   { hover: "selector" }
+#   { type: "selector", text: "..." }
+#   { scroll: 400 }
+#   { goto: "https://..." }
+interactions:
+  - { wait: 5 }
+  - { hover: "section:has(h2:text('Cost by Workspace'))" }
+  - { wait: 4 }
+  - { click: "button[title='Manage budgets']" }
+  - { wait: 8 }

@@ -1,0 +1,36 @@
+[0.00s — s1_hook]
+An engineer wants to remove a function. So, what breaks?
+
+[8.00s — s2_open_chat]
+She opens OutcomeOps and types the question every senior engineer
+asks before a refactor.
+
+[18.00s — s3_router]
+The classifier reads the query. It's both a wiring question and a
+context question. Send to RAG. Send to the graph. Both fire.
+
+[32.00s — s4_tool_chips]
+The graph queries the A S T directly. Every caller. Every override.
+Every transitive dependency. RAG queries the knowledge base for the
+why -- the design pattern that made this function exist.
+
+[50.00s — s5_response_intro]
+Removing validateCardToken affects eleven callers across three
+services.
+
+[60.00s — s6_graph_fanout]
+Three direct callers. The payments checkout handler. The refunds
+processor. The admin cardholder lookup. From each, the graph
+expands. Eight transitive callers. The full blast radius.
+
+[88.00s — s7_context]
+And the context layer adds the why. P C I compliance requires this
+function as the redactor entry point. Removing it triggers S A Q dash
+D re-attestation with the assessor.
+
+[105.00s — s8_decision]
+Wiring plus context. Impact map plus regulatory consequence. The
+engineer has the full picture before touching a single file.
+
+[118.00s — s9_cta]
+Real impact analysis. Not a guess. OutcomeOps dot A I.

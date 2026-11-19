@@ -1,0 +1,55 @@
+OutcomeOps + OpenAI on Bedrock: Pick the Model. Keep the Substrate. -- narration
+Voice: ElevenLabs Drew (q0IMILNRPxOgtBTS4taI), eleven_multilingual_v2
+Settings: stability=0.72, similarity_boost=0.75, style=0.0, speaker_boost=true, speed=1.1
+Style: observational third-person narrator, with one editorial half-step in b3
+
+Synth uses spaced acronyms (A W S, A I, M C P, I A M, I S O, P C I, G P T,
+C I S O) so Drew reads them letter-by-letter. The closing CTA
+"OutcomeOps dot A I" is spoken letter-by-letter.
+
+[b1 -- hook: the model wars]
+For two years, the conversation in this industry has been about which
+frontier model wins. Claude or G P T. Grok or Mistral. Open weights or
+hosted. Benchmark after benchmark. Leaderboard after leaderboard.
+
+[b2 -- bedrock: AWS gets a sincere thank-you]
+Then A W S did something remarkable. Bedrock pulled twenty-plus frontier
+model families behind one control plane. One I A M boundary. One audit
+log. All inside the customer's own A W S account. The frontier-model
+question stopped being an integration problem. Choice was returned to
+the buyer. That is a real accomplishment, and it deserves to be named.
+
+[b2b -- celebration: OpenAI G P T 5.5 just landed]
+And the latest addition just landed. OpenAI's G P T five point five is
+now live on Bedrock -- the twentieth frontier family in the catalog.
+Congratulations to the OpenAI team. This is a genuine shipping moment.
+The model layer is officially commodified.
+
+[b3 -- pivot: it doesn't matter which one you pick]
+And we're going to argue something a little contrarian. Now that the
+integration problem is solved, it doesn't actually matter which model
+you pick. Because picking a model is still picking a tool. And
+OutcomeOps isn't in that business. We deliver something different.
+
+[b4 -- outcome: same query, three models, same answer]
+When a security architect asks where this platform touches P C I card
+data, the answer cites the same architectural decision record. The same
+masking utility. The same auditing standard. The same runbook. Same
+role-scoped retrieval. Same audit entry. The synthesizing prose differs,
+because Claude phrases differently than G P T, and G P T phrases
+differently than Grok. But the substance is identical. The model is the
+synthesis. Your corpus is the substance. The customer picks the model.
+We don't.
+
+[b5 -- contrast: tools versus outcomes]
+The model is a commodity. That's a compliment. Frontier capability is
+real, and now the choice belongs to the buyer instead of the platform.
+But outcomes are a different category. Outcomes are what your engineers
+actually trust. What your auditors actually accept. What your C I S O
+actually signs off on. The model is the commodity. The outcome is the
+moat.
+
+[b6 -- outro: better together]
+OpenAI brings the synthesis. A W S brings the deployment. OutcomeOps
+brings the outcome. Pick the model. Keep the substrate. OutcomeOps
+dot A I.

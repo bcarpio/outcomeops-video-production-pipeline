@@ -1,0 +1,25 @@
+[0.00s — s1_hook]
+RAG is everywhere. It's good. But it has a blind spot.
+
+[6.00s — s2_rag_strengths]
+OutcomeOps RAG isn't just embeddings. It generates code-maps:
+summaries of every service, every handler, every shared library. Ask
+which services call your recommendation handler -- RAG returns the
+event-mapper, the ingestor, the email builder. The application graph,
+reasoned from the docs you've already written.
+
+[24.00s — s3_graph_fills_gap]
+But code-maps are summaries. They lag the source. They won't always
+list every caller of a shared library, or every class that extends a
+specific handler. A code knowledge graph reads the A S T directly. Real
+edges between files, classes, and functions. Every caller. Every
+override. Every consumer -- including the ones nobody documented yet.
+
+[46.00s — s4_router_picks]
+In OutcomeOps, a classifier picks per query. Application question?
+RAG. Specific symbol? Graph. Sometimes both. The engineer never sees
+the routing. They just get the right answer.
+
+[58.00s — s5_cta]
+RAG plus Graph. Code-maps plus A S T. Two retrieval modes. One
+platform. OutcomeOps dot A I.

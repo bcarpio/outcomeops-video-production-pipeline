@@ -1,0 +1,1 @@
+It’s two a.m. and payments are failing. The on-call engineer needs to know what the order pipeline actually touches, and where the runbook is. The old way: page whoever wrote it, and hope a runbook exists. Now they ask. OutcomeOps traces the path through the code, and when no runbook exists, it writes one. Incident triage in minutes, grounded in the system as it runs today.

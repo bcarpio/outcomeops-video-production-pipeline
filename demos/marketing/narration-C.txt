@@ -1,0 +1,24 @@
+[0.00s — c1_wrong_question]
+The conversation about AI in engineering has been stuck on the
+wrong question.
+
+[3.80s — c2_outputs_vs_outcomes]
+Vendors keep selling outputs. The business has only ever paid
+for outcomes.
+
+[8.30s — c3_one_line]
+There is one line that separates the two.
+
+[12.30s — c4_redefinition]
+The human sets the outcome and the standards, and reviews the
+merge. Everything in between is agents.
+
+[17.30s — c5_what_were_not]
+This is not a copilot, not a prompt library, not a chatbot.
+
+[22.30s — c6_choice]
+The choice is simple. Hire more reviewers, or hire the engineers
+who actually ship.
+
+[28.30s — c7_lockup]
+OutcomeOps. Outcomes, not outputs.

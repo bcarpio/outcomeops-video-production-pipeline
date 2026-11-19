@@ -1,0 +1,33 @@
+<speak>
+<break time="2s"/>
+<mark name="b1_ask"/>
+An architect needs to add analytics to an application. Before building anything new, they want to know — does something already exist in the portfolio?
+<break time="1500ms"/>
+<mark name="b2_query"/>
+OutcomeOps runs a semantic search across hundreds of repositories, matching on meaning, not keywords.
+<break time="4s"/>
+<mark name="b2b_finds"/>
+It surfaces the application that fits the architect's intent, and explains what it does — in plain language, from the real code.
+<break time="1200ms"/>
+<mark name="b3_describes"/>
+Pageviews, bounce rates, funnels, cohorts, even A I traffic detection. Every claim grounded with citations from the codebase.
+<break time="2500ms"/>
+<mark name="b4_awareness"/>
+That's semantic search working across an entire ecosystem. Any question about any application, answered without tribal knowledge or repository hunting.
+<break time="2s"/>
+<mark name="b5_advanced"/>
+The architect goes deeper — advanced mode. Now OutcomeOps combines what it knows about the specific application with the A I's broader industry knowledge.
+<break time="1s"/>
+<mark name="b6_reviews"/>
+It benchmarks the application against GA4, Amplitude, and Mixpanel. The A I already knows these platforms from its training. Combined with what OutcomeOps learned from the code, the result is a grounded comparison.
+<break time="1500ms"/>
+<mark name="b7_generalize"/>
+This same reasoning works for any in-house application — developer portals, authentication services, data pipelines, anything in the portfolio.
+<break time="1500ms"/>
+<mark name="b8_together"/>
+An architect can even ask how different applications in the ecosystem work together. OutcomeOps reasons across the whole portfolio, not just one app at a time.
+<break time="1s"/>
+<mark name="b9_OI"/>
+This is organizational intelligence — reasoning that combines your own codebase with the broader industry. Any application. Any question.
+<break time="2s"/>
+</speak>

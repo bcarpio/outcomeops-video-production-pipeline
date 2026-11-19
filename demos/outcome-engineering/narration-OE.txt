@@ -1,0 +1,45 @@
+[0.00s — s1_hook]
+The term "outcome engineering" is showing up everywhere — on
+consulting websites, in keynote decks, in LinkedIn manifestos. So
+what does it actually mean? And why is it changing the way enterprise
+software gets built?
+
+[15.00s — s2_definition]
+Outcome engineering is not a consulting service. It is not a process
+methodology you buy from a vendor. It's a role — a new kind of
+engineer who owns the entire journey from business problem to measured
+result. They don't wait for a product owner to translate. They speak
+in customer lifetime value, attributed revenue, and feature adoption.
+Not story points.
+
+[37.00s — s3_shift]
+For thirty years, an engineer's job was to deliver a feature. Receive
+the user story. Implement the spec. Ship the code. The outcome
+engineer rejects that handoff. When implementation is AI-assisted and
+effectively free, the bottleneck shifts — to intent, to taste, to
+ownership.
+
+[57.00s — s4_pillars]
+Outcome engineering rests on three pillars. Business fluency — they
+translate KPIs natively, without a translator in the middle. Context
+mastery — they wield organizational knowledge as a queryable layer:
+Architecture Decision Records, code-maps, and institutional memory
+captured in vectors. And AI orchestration — they treat AI as a
+teammate grounded in their organization, not a chatbot generating
+snippets.
+
+[85.00s — s5_metrics]
+DevOps teams celebrated ten deployments a week. Outcome engineers
+celebrate feature adoption hitting seventy-three percent. Churn down
+twelve points. Time-to-learning under forty-eight hours. The C-suite
+never cared how many times you deployed. They care if revenue is up.
+
+[107.00s — s6_proof]
+At Fortune 500 scale, sixteen-hour tasks now ship in under twenty
+minutes. Two dollars and twenty-four cents per feature. Ninety percent
+first-time approval. Production data — not whitepapers.
+
+[119.00s — s7_cta]
+Outcome engineering is already happening. The question is not whether
+to adopt it. It is whether your platform supports it. OutcomeOps dot A
+I — built for the outcome engineer.

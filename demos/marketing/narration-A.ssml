@@ -1,0 +1,27 @@
+<speak>
+<break time="400ms"/>
+<mark name="b1_provoke"/>
+Every keystroke your engineers send to Copilot, Cursor, or ChatGPT is a round trip to someone else's datacenter.
+<break time="500ms"/>
+<mark name="b2_what"/>
+Pricing engines. Patient data. Claims processors. Logged, cached, used to train the models that answer your competitors.
+<break time="500ms"/>
+<mark name="b3_bill"/>
+HIPAA. SOX. GDPR. FedRAMP. "Accept all" was the wrong button.
+<break time="500ms"/>
+<mark name="b4_pivot"/>
+So we built it differently.
+<break time="400ms"/>
+<mark name="b5_arch"/>
+OutcomeOps runs inside your AWS account — your Bedrock, your keys, your logs. No egress, no shadow cache, no training on your code.
+<break time="500ms"/>
+<mark name="b6_numbers"/>
+One hundred percent of prompts, in-tenant. Zero bytes out. Fifteen times the velocity of offshore baseline.
+<break time="500ms"/>
+<mark name="b7_point"/>
+Your leverage is your code. Stop giving it away.
+<break time="900ms"/>
+<mark name="b8_cta"/>
+Schedule an enterprise briefing at OutcomeOps dot A I today.
+<break time="500ms"/>
+</speak>

@@ -1,0 +1,28 @@
+[0.00s — g1_open]
+A day at a team running OutcomeOps.
+
+[3.30s — g2_standup]
+Eight in the morning. Four engineers, eighteen tickets in the
+queue. They take four. The rest go to agents.
+
+[9.80s — g3_agents_working]
+Mid-morning, the agents read the ADRs and the prior pull
+requests, draft the patches, and run the tests.
+
+[15.80s — g4_pr_queue]
+After lunch, four pull requests are queued — each citing the
+architecture decision it honors.
+
+[20.80s — g5_review]
+At four, the lead engineer reviews the intent — not the syntax —
+and the agent revises in seconds.
+
+[26.80s — g6_scoreboard]
+End of day. Fourteen stories merged, by four engineers, with
+forty-two minutes of review per pull request.
+
+[32.80s — g7_lockup]
+The day your backlog clears itself.
+
+[35.80s — g8_cta]
+How many outcomes can your engineers ship today? OutcomeOps dot A I.

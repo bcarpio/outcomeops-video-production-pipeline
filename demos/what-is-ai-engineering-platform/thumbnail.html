@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thumbnail -- What Is an AI Engineering Platform?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050910;
+    --ink: #f4f6fb;
+    --ink-dim: #8a97ad;
+    --ink-mute: #4d5a70;
+    --cyan: #22d3ee;
+    --amber: #fbbf24;
+    --red: #f87171;
+  }
+  html, body {
+    margin: 0; padding: 0;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  .canvas {
+    position: relative;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+  }
+
+  /* Top-right wordmark */
+  .wordmark {
+    position: absolute;
+    top: 48px; right: 80px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .wordmark .dot { color: var(--cyan); }
+
+  /* Bottom-left series chip */
+  .series {
+    position: absolute;
+    bottom: 48px; left: 80px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+  }
+
+  /* Hero stack */
+  .stack {
+    position: absolute;
+    inset: 0;
+    padding: 0 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* "AI coding tool" struck through */
+  .struck {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 56px;
+    letter-spacing: -0.025em;
+    line-height: 1.0;
+    color: var(--ink-dim);
+    text-decoration: line-through;
+    text-decoration-color: var(--red);
+    text-decoration-thickness: 3px;
+    margin-bottom: 32px;
+    display: inline-block;
+  }
+
+  /* Main category name */
+  .main-line1 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 96px;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    color: var(--ink);
+  }
+  .main-line2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 96px;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    color: var(--ink);
+    margin-top: 6px;
+  }
+  .accent { color: var(--cyan); }
+
+  .rule {
+    width: 120px;
+    height: 2px;
+    background: var(--cyan);
+    margin: 36px 0 28px;
+  }
+
+  .sub {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 30px;
+    letter-spacing: -0.015em;
+    color: var(--ink-dim);
+  }
+  .sub strong { color: var(--ink); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <div class="wordmark">OutcomeOps<span class="dot">.ai</span></div>
+
+  <div class="stack">
+    <span class="struck">AI coding tool.</span>
+    <div class="main-line1">AI <span class="accent">Engineering</span></div>
+    <div class="main-line2">Platform.</div>
+    <div class="rule"></div>
+    <div class="sub">The <strong>2026 enterprise buyer's guide.</strong></div>
+  </div>
+
+  <div class="series">PLATFORM PATTERNS · 09</div>
+</div>
+</body>
+</html>

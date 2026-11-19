@@ -1,0 +1,50 @@
+OutcomeOps as a Kiro Power — narration
+Voice: ElevenLabs Drew (q0IMILNRPxOgtBTS4taI), eleven_multilingual_v2
+Settings: stability=0.72, similarity_boost=0.75, style=0.0, speaker_boost=true, speed=1.1
+Style: observational third-person narrator (see CLAUDE.md)
+
+Display text below is the readable version. The synth uses spaced acronyms
+(I D E, M C P, A W S, I S O, P C I, G D P R, A I) so Drew reads them
+letter-by-letter. The voice stays at plain-language level ("a security
+standard", "an audit standard", "ISO security standards") -- the on-screen
+rail cards carry the specific control IDs (A.8.11, A.8.15).
+
+[b1 — hook]
+A spec-driven IDE turns a sentence into working code in seconds. But it
+only knows the repository in front of it.
+
+[b2 — connect]
+Here, an engineer adds OutcomeOps to Kiro as a single MCP server. One
+endpoint, one bearer token, running inside your AWS account. With that,
+the IDE can reach the organization's entire knowledge base.
+
+[b3 — spec]
+The engineer describes the outcome: build a Lambda handler that processes
+a payment refund. Kiro drafts it in seconds. Clean, readable, and missing
+the context only the organization has.
+
+[b4 — govern]
+On its own, the draft would log the full card number and store the amount
+as a float. Then the Power goes to work. It queries the knowledge base and
+pulls the standards that govern this code. Each one a real document,
+retrieved with a citation and a relevance score. A decision record turns
+the amount into a Decimal. A security standard masks the card number in the
+logs. An audit standard records who issued the refund, and when. And the
+team's handler standard enforces their own validation and response pattern.
+Same spec. Now grounded in how the company actually builds software.
+
+[b5 — why it matters]
+Without this, the rule lives in a wiki, and a reviewer catches it.
+Sometimes. With OutcomeOps, the same standards shape the code the moment
+it's written. Every time. And these aren't house style. They map to the
+standards your auditors actually check: security and risk management, data
+privacy and governance, even federal risk and authorization.
+(Acronyms generalized in voice; the on-screen slide still names ISO / PCI
+DSS / GDPR / FedRAMP.)
+
+[b6 — outro]
+None of it leaves your trust boundary. The IDE runs on the laptop. The
+knowledge base, the inference, and the standards all stay inside your AWS
+account. Air-gapped. Nothing exfiltrated. Your developers keep the tool
+they already reach for. The AI finally understands how your company builds
+software. OutcomeOps dot A I.  (spoken CTA -> "outcomeops.ai")

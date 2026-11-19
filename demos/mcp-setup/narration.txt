@@ -1,0 +1,56 @@
+[0.00s — s1_intro]
+Once OutcomeOps is deployed, the next step is connecting your AI
+coding tools. The bridge is MCP. And the only thing you need is a
+Bearer token from your settings page.
+
+[10.00s — s2_settings_open]
+A user opens settings from the admin nav. The profile section sits at
+the top. API keys live below it — empty until the first one is
+created.
+
+[18.00s — s3_create_modal]
+They click create. A modal opens. They name the key something
+memorable — Claude Desktop, in this case — and choose an expiration.
+Ninety days is a sensible default.
+
+[30.00s — s4_key_revealed]
+The key is generated and shown exactly once. A yellow banner makes it
+clear: copy it now, or it's gone. The user copies. A green check
+confirms.
+
+[42.00s — s5_active_list]
+The key now appears in the active list with its prefix, creation date,
+and last-used timestamp. Revocation is one click away.
+
+[48.00s — s6_connection_guide]
+The connection guide shows snippets for every MCP client — Claude
+Code, VS Code, Cursor, Claude Desktop. The user copies the Claude
+Desktop block, pastes the token into the Claude Desktop config, and
+restarts.
+
+[63.50s — s7_cd_open]
+Claude Desktop now sees OutcomeOps as an MCP server, connected and
+ready.
+
+[68.00s — s8_cd_query]
+A banking engineer asks a question they actually have to answer for
+compliance. Where do we touch PCI-scoped card data, and how is it
+masked in logs?
+
+[72.00s — s9_cd_tools]
+Claude reaches into OutcomeOps over MCP. It queries the knowledge
+base, lists the right workspace, and pulls the relevant architecture
+design patterns.
+
+[78.00s — s10_cd_response]
+The answer is grounded in the engineer's actual code. Three specific
+files. The masking utility. The audit redactor. And the design
+pattern for policies ties it all together. Every claim is cited.
+
+[89.00s — s11_cd_settle]
+The engineer never leaves Claude Desktop. They never read source
+code to answer a compliance question. The platform did it for them.
+
+[95.00s — s12_cta]
+One key. One endpoint. Every answer cited back to your own code.
+OutcomeOps dot A I.

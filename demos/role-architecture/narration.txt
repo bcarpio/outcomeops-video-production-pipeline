@@ -1,0 +1,1 @@
+A chief architect wants to know whether the new ingestion service still follows A D R fourteen. The old way: wait for it to surface in a design review, usually too late to change. Now they ask. OutcomeOps assesses the service against the decision and shows exactly where it drifts. Architectural drift, caught before it ships, not after.

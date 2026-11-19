@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thumbnail B — Outcome Engineering (Keyword + Stat)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050910;
+    --ink: #f4f6fb;
+    --ink-dim: #8a97ad;
+    --cyan: #22d3ee;
+    --cyan-soft: rgba(34,211,238,0.10);
+    --rule: rgba(255,255,255,0.10);
+  }
+  html, body {
+    margin: 0; padding: 0;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  .canvas {
+    position: relative;
+    width: 1280px; height: 720px;
+    overflow: hidden;
+    padding: 96px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* Hero keyword — owns the frame */
+  .title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 180px;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
+    color: var(--ink);
+  }
+  .title .accent { color: var(--cyan); }
+
+  /* Stat strip — chunky, balanced badge below */
+  .stat-row {
+    display: flex; align-items: center; gap: 24px;
+    margin-top: 56px;
+  }
+  .stat-badge {
+    display: inline-flex; align-items: baseline; gap: 16px;
+    padding: 18px 32px;
+    background: var(--cyan-soft);
+    border: 2px solid var(--cyan);
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 56px;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .stat-badge .arrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    font-size: 44px;
+    color: var(--cyan);
+    transform: translateY(-2px);
+  }
+  .stat-badge .new { color: var(--cyan); }
+
+  .stat-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 28px;
+    letter-spacing: -0.01em;
+    color: var(--ink-dim);
+  }
+  .stat-label strong { color: var(--ink); font-weight: 600; }
+
+  .wordmark {
+    position: absolute;
+    bottom: 56px; right: 96px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .wordmark .dot { color: var(--cyan); }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="title">Outcome</div>
+  <div class="title">Engineering<span class="accent">.</span></div>
+
+  <div class="stat-row">
+    <div class="stat-badge">
+      <span>16h</span>
+      <span class="arrow">→</span>
+      <span class="new">20m</span>
+    </div>
+    <div class="stat-label">per feature at <strong>Fortune 500 scale.</strong></div>
+  </div>
+
+  <div class="wordmark">OutcomeOps<span class="dot">.ai</span></div>
+</div>
+</body>
+</html>

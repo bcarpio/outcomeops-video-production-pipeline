@@ -1,0 +1,23 @@
+[2.00s — beat1_ask]
+An engineer asks OutcomeOps a question grounded in their own architecture.
+
+[6.74s — beat2_search]
+Workspaces narrow the scope. MCP servers attach. The knowledge base searches six repos.
+
+[13.79s — beat3_grounded]
+The answer comes back grounded — citing ADR-001 for error handling, ADR-006 for Python patterns. Pydantic validation. Structured audit events. Typed responses.
+
+[26.91s — beat4_code]
+Then the actual handler — written to your patterns, not generic Lambda boilerplate.
+
+[32.33s — beat5_sources]
+Every claim links back to source. Six results from your code-maps and ADRs, reranked by Cohere. About four-tenths of a cent for the round trip.
+
+[45.69s — beat6_next]
+Next question's already queued — tests for that handler, matching ADR-005.
+
+---
+Source SSML: narration.ssml
+Speech marks: narration.marks.json
+Generated with: AWS Polly, voice=Matthew, engine=neural
+Total audio: 53.9s

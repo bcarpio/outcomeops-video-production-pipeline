@@ -1,0 +1,30 @@
+[0.00s — b1_question]
+Most companies can't answer who actually knows how the whole system
+fits together.
+
+[4.75s — b2_silos]
+Code, tickets, documentation, and SharePoint — four silos, nothing
+talking to each other.
+
+[10.82s — b3_ingest]
+OutcomeOps ingests all of it — code, tickets, docs, SharePoint —
+and draws the map.
+
+[17.64s — b4_reveal]
+The result isn't a chatbot. It's organizational intelligence.
+
+[21.21s — b5_personas]
+Product writes stories against what exists. Support answers without
+engineering. Leadership finds market exposure in one query.
+
+[28.90s — b6_regulated]
+In healthcare, financial services, and aerospace, "just use ChatGPT"
+isn't an answer.
+
+[35.03s — b7_moat]
+Everyone has the same AI models. The moat is the context only you
+can give them.
+
+[39.95s — b8_cta]
+See what your codebase can tell you. Request a demo at OutcomeOps
+dot A I today.

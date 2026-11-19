@@ -1,0 +1,75 @@
+The Layer Underneath -- narration
+Voice: ElevenLabs Drew (q0IMILNRPxOgtBTS4taI), eleven_multilingual_v2
+Settings: stability=0.72, similarity_boost=0.75, style=0.0, speaker_boost=true, speed=1.1
+Style: observational third-person narrator (see CLAUDE.md)
+
+Display text below is the readable version. Synth uses spaced acronyms
+(A W S, A I) so Drew reads them letter-by-letter. The closing CTA
+"OutcomeOps dot A I" is spoken letter-by-letter.
+
+[b1 -- cascade]
+Different roles. Different questions. All depending on the same thing --
+knowing how the system actually works, right now.
+
+[b2 -- thesis]
+What if every role could ask the same place?
+
+[b3 -- reveal]
+This is the substrate underneath. One corpus. Five departments -- each
+asking from their own authorized angle. The platform doesn't know what
+role is asking. It only knows what the role is permitted to see.
+
+[b3b -- AI coding agents on the same substrate]
+And it's not just humans asking. Every A I coding agent in the
+organization -- Cursor, Claude Code, Copilot -- gets fed from the same
+substrate. The whole organization shares one corpus. This is the
+antithesis of the local optimization trap, where every team builds their
+own private context. One source of truth. Every consumer, human and
+machine.
+
+[b4 -- Pillar 1: Codified knowledge as data]
+For this to work, the organization's standards have to live where the
+platform can query them -- as documents, not as features baked into a
+vendor product. Add a decision record this week. Next week's answer uses
+it. Deprecate a pattern. The system stops recommending it the next
+morning.
+
+[b5 -- Pillar 2: Ground-truth grounding]
+Every answer is anchored to the code as it exists in your repositories
+right now. When the documentation says one thing and the code says
+another, the code wins. The discrepancy is surfaced before anyone acts on
+it. The AI never confidently relays a stale wiki.
+
+[b6 -- Pillar 3: Customer-owned accountability]
+Every interaction lands in your AWS account -- who asked, what was
+retrieved, what came back. When the model refuses a prompt, a real-time
+alert fires. The whole stream exports to your security tools in an open
+standard. Your audit trail lives where your auditors work.
+
+[b7 -- Pillar 4: Domain-agnostic platform]
+The engine carries zero domain knowledge. No healthcare edition. No
+financial services edition. No public sector edition. No aerospace
+edition. There is one engine, and a knowledge base each customer fills
+with their own context. Same engine. Different knowledge.
+
+[b8 -- Pillar 5: Synthesis, not search]
+The output isn't search results. The platform pulls only what's relevant
+-- code, standards, decision records -- and reconciles them in one pass.
+The reader gets the answer, not the homework. The same pipeline can turn
+that answer into a sprint backlog for engineering, a compliance document
+for security, a runbook for ops, a change-impact summary for compliance.
+Same corpus. Different answer shapes.
+
+[b9a -- CTA Phase A: Wiring recap]
+These aren't five capabilities. They're five wires of the same fabric.
+Codified knowledge. Code-anchored truth. Role-scoped retrieval.
+Synthesized output. And an audit trail threading through all of them.
+
+[b9b -- CTA Phase B: Trust boundary]
+All of it lives in your AWS account. Code, schemas, decisions, audit
+trails. The trust boundary holds. Nothing crosses out.
+
+[b9c -- CTA Phase C: Brand close]
+The pipeline is the guardrail. The intelligence layer is what makes sure
+the pipeline has something worth shipping. The Layer Underneath.
+OutcomeOps dot A I.

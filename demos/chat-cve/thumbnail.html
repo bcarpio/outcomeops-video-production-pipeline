@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thumbnail -- Chat CVE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050910; --ink: #f4f6fb; --ink-dim: #8a97ad; --ink-mute: #4d5a70;
+    --cyan: #22d3ee; --amber: #fbbf24; --green: #34d399; --red: #f87171;
+  }
+  html, body { margin: 0; padding: 0; width: 1280px; height: 720px; overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+  .canvas { position: relative; width: 1280px; height: 720px; overflow: hidden; }
+  .grid { position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse at 70% 60%, black 10%, transparent 75%);
+    mask-image: radial-gradient(ellipse at 70% 60%, black 10%, transparent 75%); }
+  .glow { position: absolute; right: -120px; top: 100px; width: 740px; height: 740px;
+    background: radial-gradient(circle, rgba(248,113,113,0.10), transparent 65%); }
+
+  .wordmark { position: absolute; top: 46px; right: 76px; font-weight: 600; font-size: 24px;
+    letter-spacing: -0.02em; color: var(--ink); }
+  .wordmark .dot { color: var(--cyan); }
+
+  .eyebrow { position: absolute; left: 90px; top: 88px;
+    font-family: 'JetBrains Mono', monospace; font-size: 19px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; }
+  .eyebrow .lead { color: var(--red); }
+  .eyebrow .sep { color: var(--ink-mute); margin: 0 10px; }
+  .eyebrow .lo { color: var(--ink-dim); }
+
+  .text-block { position: absolute; left: 88px; top: 156px; width: 640px; }
+  .line1 { font-weight: 600; font-size: 76px; letter-spacing: -0.04em; line-height: 1.0; white-space: nowrap; }
+  .line2 { font-weight: 800; font-size: 76px; letter-spacing: -0.045em; line-height: 1.0; margin-top: 8px; white-space: nowrap; }
+  .line2 .accent { color: var(--amber); }
+  .rule { width: 116px; height: 3px; background: var(--cyan); margin: 30px 0 22px; }
+  .sub { font-weight: 400; font-size: 27px; letter-spacing: -0.015em; color: var(--ink-dim);
+    max-width: 580px; line-height: 1.35; }
+  .sub strong { color: var(--ink); font-weight: 500; }
+
+  /* Patch-plan card */
+  .card { position: absolute; right: 72px; top: 192px; width: 452px;
+    background: #0c1320; border: 1px solid rgba(255,255,255,0.10); border-radius: 12px;
+    box-shadow: 0 30px 80px -24px rgba(0,0,0,0.8); overflow: hidden; }
+  .alert { display: flex; align-items: center; gap: 10px;
+    padding: 12px 18px; background: rgba(248,113,113,0.10);
+    border-bottom: 1px solid rgba(248,113,113,0.30);
+    font-family: 'JetBrains Mono', monospace; font-size: 14px;
+    color: var(--red); font-weight: 700; letter-spacing: 0.06em; }
+  .alert .ico { width: 18px; height: 18px; border-radius: 50%; background: var(--red);
+    display: inline-flex; align-items: center; justify-content: center; color: #050910;
+    font-weight: 900; font-size: 12px; }
+  .row { display: flex; align-items: center; gap: 12px; padding: 12px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.05); font-family: 'JetBrains Mono', monospace; }
+  .row:last-child { border-bottom: none; }
+  .row .name { color: var(--ink); font-size: 17px; font-weight: 600; flex: 1; }
+  .row .ver { color: var(--ink-dim); font-size: 14px; }
+  .row .pill { font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    padding: 4px 9px; border-radius: 5px; }
+  .row .pill.now { color: var(--red); background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.45); }
+  .row .pill.next { color: var(--amber); background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.45); }
+  .row .pill.verify { color: var(--cyan); background: rgba(34,211,238,0.10); border: 1px solid rgba(34,211,238,0.40); }
+
+  .tag { position: absolute; left: 90px; bottom: 52px;
+    font-family: 'JetBrains Mono', monospace; font-size: 16px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-mute); }
+  .tag b { color: var(--ink-dim); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="grid"></div>
+  <div class="glow"></div>
+
+  <div class="wordmark">OutcomeOps<span class="dot">.ai</span></div>
+  <div class="eyebrow"><span class="lead">CVE ALERT</span><span class="sep">·</span><span class="lo">FRIDAY · 4 PM</span></div>
+
+  <div class="text-block">
+    <div class="line1">Which apps are</div>
+    <div class="line2"><span class="accent">vulnerable?</span></div>
+    <div class="rule"></div>
+    <div class="sub">Portfolio-wide retrieval, ranked by impact. <strong>Patch plan ready to merge.</strong></div>
+  </div>
+
+  <div class="card">
+    <div class="alert"><span class="ico">!</span>react-router XSS &mdash; 3 apps affected</div>
+    <div class="row">
+      <span class="name">portal-app</span>
+      <span class="ver">v7.10</span>
+      <span class="pill now">PATCH NOW</span>
+    </div>
+    <div class="row">
+      <span class="name">analytics</span>
+      <span class="ver">v7.11</span>
+      <span class="pill next">PATCH NEXT</span>
+    </div>
+    <div class="row">
+      <span class="name">internal-tool</span>
+      <span class="ver">v8.x</span>
+      <span class="pill verify">VERIFY</span>
+    </div>
+  </div>
+
+  <div class="tag"><b>DEMO</b> · INCIDENT RESPONSE ACROSS THE PORTFOLIO</div>
+</div>
+</body>
+</html>

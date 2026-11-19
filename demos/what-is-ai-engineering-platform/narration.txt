@@ -1,0 +1,114 @@
+[0.00s — s1_hook]
+Every enterprise AI initiative in 2026 hits the same wall. The model
+works. The prompts work. RAG works. The output is still wrong --
+technically correct, architecturally incompatible with how your
+organization actually builds software. The missing layer has a name.
+And in 2026, buyers stopped calling it an AI coding tool. They call
+it an AI engineering platform.
+
+[24.00s — s2_platform_vs_assistant]
+The 2024 framing was AI coding assistant. Scope: one engineer, one
+I D E, one function. The 2026 question is bigger. How does your
+software engineering organization, at the team and org level, use
+AI safely and consistently? That's a platform question. The unit
+of work shifts too. An assistant generates a completion. A platform
+generates a pull request -- with cited design decisions, validated
+against your standards, ready for review. A chat turn is
+unreviewable. A pull request is. That's the difference between AI
+is fast and AI ships to production. The platform question changes
+who buys it. From the individual engineer expensing a twenty dollar
+subscription, to the engineering executive provisioning
+infrastructure for hundreds of people.
+
+[79.00s — s3_five_components]
+Every serious AI engineering platform has five components. They're
+not buzzword distinctions. They're real architectural layers, and
+you can map any platform to them. Context. The organization's
+authoritative knowledge -- design decisions, code maps, runbooks,
+Confluence pages, Jira tickets -- ingested with metadata weighting
+so the platform knows which sources are authoritative and which are
+just noise. Generation. Retrieval plus model plus standards
+enforcement, run as one governed pipeline. The model gets the
+relevant context, generates output, and validates against your
+standards before anything leaves the platform. Output. Structured
+artifacts. Pull requests with citations. Not chat turns. A chat
+turn is unreviewable. A P R is. Audit. Every interaction logged.
+Who asked, what was retrieved, what was generated, what got merged.
+Queryable by your compliance team, not by a vendor support portal.
+And deployment. Where the whole stack actually runs. The platforms
+that win share the same five components. Where they differ --
+significantly -- is where each component runs.
+
+[144.00s — s4_paved_road]
+Why does this pattern work? Because it's not new. In late twenty
+sixteen, I was brought into a struggling Docker migration at Liberty
+Mutual's consumer business. The team had bought the cloud-agnostic-
+deployment vision but had no concrete path to it. The migration was
+already behind. The platform team was already burned out. The
+executive sponsor was running out of patience. Within months, we
+built a self-service platform called Fusion. The foundation was Chef
+recipes that automated Docker Datacenter deployments. The interface
+was a declarative file at the center of every repo. The Fusionfile.
+Teams declared what they needed. Upstream and downstream sidecars.
+Data layer components. Pre and post deploy hooks. The platform
+figured out the rest. Configuration. Networking. Security.
+Monitoring. By twenty seventeen, Fusion scaled to three hundred
+services in containers, hundreds of deployments per day. Docker
+featured the work as an enterprise success story. That's the
+playbook for an AI engineering platform in twenty twenty six. Teams
+declare what they need in a per-repo config. Design decisions and
+standards. The platform generates the code maps, runs the retrieval,
+and figures out the rest. Different layer. Same paved-road thesis.
+
+[229.00s — s5_what_changed]
+Three things changed for this category in twenty twenty six. The
+vocabulary stabilized. Buyers stopped saying AI coding tool and
+started saying AI engineering platform. The vocabulary shift signals
+the buyer shift. From individual subscription to organizational
+infrastructure. Multi-region became table stakes. After the October
+twenty twenty five us-east-one event took down a long list of AI-
+dependent SaaS, every enterprise architecture review now asks
+vendors for their high-availability story. And the pricing model
+fractured. Per-seat dominates volume. Per-task got cheaper.
+Fixed-enterprise plus customer-paid-inference became the dominant
+cost-transparency model for buyers who want a known annual ceiling.
+
+[269.00s — s6_four_platforms]
+Four platforms define the category in 2026. OutcomeOps. Deploys via
+Terraform into your A W S account. Every component runs inside your
+V P C. Unit of work is the pull request. Best fit for regulated
+enterprise and audit-heavy organizations. Devin. Cognition's
+autonomous agent. Runs in their cloud. Engineers assign tasks --
+implement this ticket, refactor this module -- and Devin executes
+end to end. Unit of work is the task. Best fit for teams that want
+managed execution and don't have compliance pressure on vendor
+cloud. Cursor. An I D E plus Cursor's cloud for inference and
+codebase indexing. Unit of work is the file or inline edit. Best
+fit for fast-moving teams optimizing individual engineer
+productivity. GitHub Copilot. Microsoft cloud. Per seat per month.
+Unit of work spans completion through chat through agent. Best fit
+for GitHub-native shops with minimal procurement friction. Same
+category. Different architectural choices.
+
+[339.00s — s7_five_questions]
+Most vendor comparisons drown in feature lists. Five questions cut
+through. First. Where does the platform run? Customer cloud, vendor
+cloud, or the engineer's laptop? This single question determines
+roughly seventy percent of the procurement experience. Second. What
+is the unit of work? Completion, chat turn, file, task, or pull
+request? Granularity drives both pricing and reviewability. Third.
+What's the cost model? Per seat, per token, per task, or fixed
+enterprise. Predictability and ceiling matter more than nominal
+price. Fourth. What's the audit story? Can you produce a queryable
+log of who asked what, what was retrieved, what was generated, and
+what got merged? If not, compliance will ask later. Fifth. Does the
+platform know your patterns, or guess them? Question one usually
+determines questions three and four by structural consequence.
+Questions two and five sort the rest.
+
+[399.00s — s8_cta]
+The model layer is increasingly commodity. The platform layer is
+where enterprise AI lives or dies. Read the full guide and the
+detailed platform comparison on the blog. Or book an enterprise
+briefing to see what a customer A W S deployment looks like end to
+end. OutcomeOps dot A I.
