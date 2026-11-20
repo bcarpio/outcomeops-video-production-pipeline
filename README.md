@@ -7,6 +7,16 @@ animation clock, narration timestamps drive the timing, and headless
 Chromium renders the MP4. `CLAUDE.md` is the full operating manual;
 this file is the map.
 
+## Example output
+
+[![Audit. Cost. Control. Why InfoSec Picks OutcomeOps](https://img.youtube.com/vi/RpCEbzA0_Zs/maxresdefault.jpg)](https://www.youtube.com/watch?v=RpCEbzA0_Zs)
+
+[Audit. Cost. Control. Why InfoSec Picks OutcomeOps](https://www.youtube.com/watch?v=RpCEbzA0_Zs)
+was compiled by this pipeline: no screen recording, no editor. Its
+source is [`demos/transparency/`](demos/transparency/), and you can
+play the scene yourself from the catalog (see "Serving previews"
+below).
+
 The `demos/` folder holds the real scenes behind the published
 OutcomeOps videos, with staged data only. Use them as worked examples:
 the engine (`animations.jsx`, `export_demo.py`, `lib/compositor.py`,
