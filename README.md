@@ -26,6 +26,10 @@ source is [`demos/transparency/`](demos/transparency/), and you can
 play the scene yourself from the catalog (see "Serving previews"
 below).
 
+Watch the same scene re-rendered at a true 60 fps by the current exporter:
+
+[![Audit. Cost. Control. Why InfoSec Picks OutcomeOps, at 60 fps](https://www.briancarpio.com/videos/transparency-60fps-poster.jpg)](https://www.briancarpio.com/videos/transparency-60fps.mp4)
+
 ## Build your own video
 
 Everything in `demos/` except `demos/starter/` is OutcomeOps' own
