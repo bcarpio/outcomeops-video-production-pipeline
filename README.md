@@ -17,18 +17,13 @@ a team that wants to edit on a timeline.
 
 ## Example output
 
-[![Audit. Cost. Control. Why InfoSec Picks OutcomeOps](https://img.youtube.com/vi/RpCEbzA0_Zs/maxresdefault.jpg)](https://www.youtube.com/watch?v=RpCEbzA0_Zs)
+[![Audit. Cost. Control. Why InfoSec Picks OutcomeOps](https://www.briancarpio.com/videos/transparency-60fps-poster.jpg)](https://www.briancarpio.com/videos/transparency-60fps.mp4)
 
-[Audit. Cost. Control. Why InfoSec Picks OutcomeOps](https://www.youtube.com/watch?v=RpCEbzA0_Zs)
-was compiled by this pipeline. The product was never screen recorded
-and no editor was opened. Its
-source is [`demos/transparency/`](demos/transparency/), and you can
-play the scene yourself from the catalog (see "Serving previews"
-below).
-
-Watch the same scene re-rendered at a true 60 fps by the current exporter:
-
-[![Audit. Cost. Control. Why InfoSec Picks OutcomeOps, at 60 fps](https://www.briancarpio.com/videos/transparency-60fps-poster.jpg)](https://www.briancarpio.com/videos/transparency-60fps.mp4)
+[Audit. Cost. Control. Why InfoSec Picks OutcomeOps](https://www.briancarpio.com/videos/transparency-60fps.mp4)
+was compiled by this pipeline at a true 60 fps. The product was never
+screen recorded and no editor was opened. Its source is
+[`demos/transparency/`](demos/transparency/), and you can play the scene
+yourself from the catalog (see "Serving previews" below).
 
 ## Build your own video
 
