@@ -33,6 +33,10 @@ OUT = Path(__file__).resolve().parents[1] / "demos/intelligence-layer/_synth/b3b
 
 
 def get_api_key() -> str:
+    """ELEVENLABS_API_KEY if set, otherwise the SSM SecureString this repo uses."""
+    key = os.environ.get("ELEVENLABS_API_KEY")
+    if key:
+        return key
     ssm = boto3.client("ssm", region_name=os.environ.get("AWS_REGION", "us-west-2"))
     return ssm.get_parameter(
         Name="/outcomeops-video-gen/eleven-labs",

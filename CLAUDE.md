@@ -1,5 +1,11 @@
 # Claude Guidance for the OutcomeOps Video Production Pipeline
 
+This file holds two kinds of guidance. Most of it is about the pipeline
+and applies to any product. The sections marked **(OutcomeOps example)**
+describe OutcomeOps itself: its product surfaces, brand voice and
+narrator settings. If you are using this repo for your own product,
+replace those sections with your product's equivalents and keep the rest.
+
 ## What this tool is
 
 Standalone Python CLI that generates narrated marketing videos of real
@@ -38,10 +44,12 @@ venv/                       — local virtualenv (gitignored)
 
 ## Secrets
 
-Third-party API keys live in **AWS SSM Parameter Store** under
-`/outcomeops-video-gen/*` as `SecureString` parameters. Fetch them with
-`boto3` + the same AWS credentials the rest of the pipeline uses; never
-hardcode or stash in `.env`.
+The scripts read the ElevenLabs key from the `ELEVENLABS_API_KEY`
+environment variable when it is set. Otherwise they fall back to **AWS
+SSM Parameter Store**, which is how this repo runs for OutcomeOps: keys
+live under `/outcomeops-video-gen/*` as `SecureString` parameters,
+fetched with `boto3` and the same AWS credentials the rest of the
+pipeline uses. Either way, never hardcode a key or commit it.
 
 | Parameter | Used by |
 |---|---|
@@ -51,11 +59,13 @@ Example:
 
 ```python
 import boto3, os
-ssm = boto3.client('ssm', region_name=os.environ.get('AWS_REGION', 'us-west-2'))
-api_key = ssm.get_parameter(
-    Name='/outcomeops-video-gen/eleven-labs',
-    WithDecryption=True,
-)['Parameter']['Value']
+api_key = os.environ.get('ELEVENLABS_API_KEY')
+if not api_key:
+    ssm = boto3.client('ssm', region_name=os.environ.get('AWS_REGION', 'us-west-2'))
+    api_key = ssm.get_parameter(
+        Name='/outcomeops-video-gen/eleven-labs',
+        WithDecryption=True,
+    )['Parameter']['Value']
 ```
 
 When adding a new third-party key:
@@ -108,7 +118,35 @@ duration → Playwright records for that many seconds → ffmpeg combines.
 If your interactions finish before the audio, the page just sits idle
 until the audio ends.
 
-## What I know about the OutcomeOps surfaces
+## Visual fidelity: the product's styles are the source of truth
+
+When a scene rebuilds the product's UI (`chat_ui.jsx`, `scene_ui.jsx`,
+dashboards), every color, font, radius and spacing value comes from the
+product's own styling, never from taste.
+
+- Read the page component the scene imitates and the styles it uses:
+  the Tailwind classes in the component, `tailwind.config.*`, and any
+  CSS variables in `index.css`.
+- Turn those into the scene's palette object, with a comment above it
+  naming the source files, e.g. `// From ui/src/pages/Chat.tsx + ui/src/index.css`.
+- If the product uses stock Tailwind with no custom theme, use
+  Tailwind's stock values for the classes it uses (`gray-50` is
+  `#f9fafb`, `blue-600` is `#2563eb`, and so on).
+- Never describe a palette by a style reference ("Linear-ish",
+  "Vercel-ish"). A palette described that way was invented.
+
+The `chat_ui.jsx` palettes in `chat`, `chat-analytics`, `chat-cve` and
+`refactor-blast-radius` predate this rule and are approximations of the
+app. They stay as they are so the source matches the published videos.
+Do not copy them as the starting point for a new scene.
+
+## Product catalog (OutcomeOps example)
+
+This catalog is what keeps scenes faithful to the real product: where
+its source lives, which page renders each route, what makes good scene
+material, and which selectors survive a redesign. For your own product,
+replace it with the same information about yours, including where its
+styling lives (see "Visual fidelity" above).
 
 ### Marketing site — `outcomeops.ai`
 
@@ -154,7 +192,7 @@ When writing scenes for the app, look for `data-test=` attributes
 first, otherwise use `button[title='...']` (every nav icon has a title)
 or text-content selectors like `button:text('Save Budget')`.
 
-## Brand voice (also in `brand_context.md`)
+## Brand voice (OutcomeOps example; also in `brand_context.md`)
 
 - Lead with concrete outcomes (numbers, time savings), not abstractions
 - Avoid filler: "in today's fast-paced world", "imagine if", "unlock"
@@ -190,7 +228,7 @@ If the Polly voice-over ever sounds like terse marketing copy, stop and
 reshape it around "what's happening right now, and what the persona can
 now see/do."
 
-## ElevenLabs voice (for `demos/*/` and marketing videos)
+## ElevenLabs voice (OutcomeOps example)
 
 Everything under `demos/` — `chat-analytics`, `chat-cve`, `jira-to-pr`,
 `marketing`, and the shared CTAs — uses **ElevenLabs Drew** as the

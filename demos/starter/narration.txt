@@ -1,0 +1,11 @@
+[[B0]]
+Every product demo starts as a question someone actually asks.
+
+[[B1]]
+Here, an engineer types it into the product, the same way they would on any normal day.
+
+[[B2]]
+The answer arrives in seconds, with the evidence behind it, one line at a time.
+
+[[B3]]
+Change this text, run the synth script, and the animation follows the voice.

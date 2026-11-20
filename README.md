@@ -18,6 +18,37 @@ source is [`demos/transparency/`](demos/transparency/), and you can
 play the scene yourself from the catalog (see "Serving previews"
 below).
 
+## Build your own video
+
+Everything in `demos/` except `demos/starter/` is OutcomeOps' own
+material, kept as worked examples. To make a video for your product:
+
+1. Follow **Setup** below.
+2. Copy the starter scene: `cp -r demos/starter demos/my-video`. It is
+   product-neutral: a title, a typed question, an answer that builds
+   line by line, and an end card.
+3. Serve the repo (`python3 -m http.server 8765`) and open
+   `http://localhost:8765/demos/my-video/`. Edit `scene.jsx` until the
+   visuals are right. No audio is needed yet, so this costs nothing.
+4. Write `narration.txt` with a `[[B0]]`, `[[B1]]`, ... marker on its
+   own line before each beat, one beat per visual moment.
+5. Synthesize the voice and the timings:
+   ```bash
+   ELEVENLABS_API_KEY=... python scripts/synth.py demos/my-video/narration.txt
+   ```
+   Paste the `BEATS` block it prints into `scene.jsx` and set the
+   `duration` it prints in `index.html`. The default voice is the one
+   OutcomeOps uses; pass `--voice <voice_id>` for your own.
+6. Export: `python export_demo.py demos/my-video` writes
+   `output/my-video/final.mp4`.
+
+To have Claude Code build scenes for you, give it the same thing this
+repo gives it for OutcomeOps: a CLAUDE.md that catalogs your product's
+source repo, its routes and page components, stable selectors, and where
+its styling lives. The sections of `CLAUDE.md` marked **(OutcomeOps
+example)** show the shape; replace them with yours. Then ask for a scene
+the way you would describe the video to an editor.
+
 The `demos/` folder holds the real scenes behind the published
 OutcomeOps videos, with staged data only. Use them as worked examples:
 the engine (`animations.jsx`, `export_demo.py`, `lib/compositor.py`,
@@ -56,6 +87,8 @@ demos/<name>/
   thumbnail.html   — the YouTube thumbnail, designed in HTML
 ```
 
+`demos/starter/` is the minimal version of the same layout.
+
 The Stage runs one `requestAnimationFrame` clock; every visual is a
 pure function of that clock, so the scene at any given second looks the
 same every time. The export is a real-time capture, which is why the
@@ -67,8 +100,9 @@ The flow, in order:
    (`python3 -m http.server 8765`) and iterate on the scene in a real
    browser at `http://localhost:8765/demos/<name>/`. Layout tweaks
    are free; synthesis is not.
-2. **Narration.** Write `narration.txt` with `[[BEAT]]` markers. A
-   per-scene script in `scripts/synth_*.py` sends it to ElevenLabs
+2. **Narration.** Write `narration.txt` with `[[BEAT]]` markers.
+   `scripts/synth.py` (or a per-scene `scripts/synth_*.py`, kept as
+   examples of scenes with special timing needs) sends it to ElevenLabs
    (Drew, `q0IMILNRPxOgtBTS4taI`, `eleven_multilingual_v2`, speed 1.1)
    via the `/with-timestamps` endpoint, maps each beat's character
    offset to a timestamp, writes `narration.mp3` +
@@ -84,9 +118,11 @@ The flow, in order:
    `output/<name>/youtube-metadata.md` (recommended title, A/B
    alternates, description, tags — plain ASCII).
 
-The ElevenLabs API key lives in AWS SSM Parameter Store at
-`/outcomeops-video-gen/eleven-labs` (SecureString) — fetched with
-boto3, never `.env`, never hardcoded.
+**ElevenLabs API key.** The scripts use `ELEVENLABS_API_KEY` from the
+environment when it is set. Otherwise they read it from AWS SSM
+Parameter Store at `/outcomeops-video-gen/eleven-labs` (SecureString),
+which is how this repo runs for OutcomeOps. SSM is our choice, not a
+requirement. Whichever you use, never hardcode or commit the key.
 
 ## Legacy pipeline: scene YAMLs (`generate.py`)
 
@@ -119,9 +155,11 @@ playwright install chromium
 sudo apt-get install -y ffmpeg
 ```
 
-Credentials: standard AWS credentials (env or `~/.aws/credentials`),
-`AWS_REGION` defaults to `us-west-2`. Everything third-party (ElevenLabs)
-is fetched from SSM with those same credentials.
+Credentials: for the demos pipeline you only need an ElevenLabs key,
+either in `ELEVENLABS_API_KEY` or in SSM (see above). AWS credentials
+(env or `~/.aws/credentials`, `AWS_REGION` defaults to `us-west-2`) are
+needed for the SSM fallback and for the legacy YAML pipeline, which uses
+Bedrock and Polly.
 
 ## Serving previews
 

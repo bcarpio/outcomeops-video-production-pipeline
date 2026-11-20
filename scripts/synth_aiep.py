@@ -55,6 +55,10 @@ def parse_scenes(text: str) -> list[tuple[str, str]]:
 
 
 def get_api_key() -> str:
+    """ELEVENLABS_API_KEY if set, otherwise the SSM SecureString this repo uses."""
+    key = os.environ.get("ELEVENLABS_API_KEY")
+    if key:
+        return key
     ssm = boto3.client("ssm", region_name=os.environ.get("AWS_REGION", "us-west-2"))
     return ssm.get_parameter(
         Name="/outcomeops-video-gen/eleven-labs",
