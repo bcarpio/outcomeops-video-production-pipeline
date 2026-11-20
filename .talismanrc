@@ -1,0 +1,24 @@
+# Talisman allowlist. Every entry here was reviewed and is NOT a secret.
+# Keep entries narrow: exact values or tightly scoped patterns, never whole
+# directories. A changed file with a checksum entry is re-scanned automatically.
+version: "1.0"
+# Fail only on high or critical findings; low-severity hits on narration
+# prose and React props are noise.
+threshold: high
+allowed_patterns:
+  # Subresource Integrity hashes on the pinned React/Babel CDN <script> tags.
+  - 'integrity="sha384-[A-Za-z0-9+/=]+"'
+  # Fake OutcomeOps API key used as staged data in the mcp-setup demo
+  # (shown on screen in the published video). Not a real credential.
+  - 'ooa_4f7a829d3e6b1c8f5a92b7d40e6c1f8a3b9d2e7c'
+  - 'ooa_4f7a82'
+fileignoreconfig:
+  # Binary logo images; Talisman's base64 detector misreads PNG bytes.
+  - filename: demos/kiro-power/outcomeops_logo.png
+    ignore_detectors: [filecontent]
+  - filename: demos/jira-to-pr/outcomeops_logo.png
+    ignore_detectors: [filecontent]
+  # Template with the AWS variable names and empty values; no credentials.
+  # Pinned by checksum so any edit to this file is scanned again.
+  - filename: .env.example
+    checksum: 3d5903f463639f886448e8334c7cf46df813bb392955097f2d0c210d4b1d8dde

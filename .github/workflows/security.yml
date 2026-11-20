@@ -1,0 +1,87 @@
+name: Security scans
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly, so newly published CVEs in the Python dependencies are caught
+    # even when nothing in the repo changes.
+    - cron: "0 13 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  TALISMAN_VERSION: v1.37.0
+  TRIVY_VERSION: 0.76.2
+
+jobs:
+  talisman:
+    name: Talisman (secrets in the current tree)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Talisman (pinned, checksum verified)
+        run: |
+          base="https://github.com/thoughtworks/talisman/releases/download/${TALISMAN_VERSION}"
+          curl -fsSLO "${base}/talisman_linux_amd64"
+          curl -fsSLO "${base}/checksums"
+          grep ' talisman_linux_amd64$' checksums | sha256sum -c -
+          sudo install -m 0755 talisman_linux_amd64 /usr/local/bin/talisman
+          rm talisman_linux_amd64 checksums
+
+      - name: Scan every tracked file
+        # Talisman's pre-commit hook scans staged changes, and a fresh CI
+        # checkout has none, so the hook alone would pass without scanning
+        # anything. Stage the whole tree against an empty root commit so every
+        # file is checked, with .talismanrc (allowlist + threshold: high) applied.
+        run: |
+          git config user.name ci
+          git config user.email ci@example.invalid
+          git checkout -q --orphan talisman-scan
+          git rm -rq --cached .
+          git commit -q --allow-empty -m "empty root for scanning"
+          git add -A
+          echo "Scanning $(git diff --cached --name-only | wc -l) files"
+          talisman --githook pre-commit
+
+  trivy:
+    name: Trivy (dependency CVEs and secrets)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+
+      - name: Install Trivy (pinned, checksum verified)
+        run: |
+          base="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"
+          tarball="trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          curl -fsSLO "${base}/${tarball}"
+          curl -fsSLO "${base}/trivy_${TRIVY_VERSION}_checksums.txt"
+          grep " ${tarball}\$" "trivy_${TRIVY_VERSION}_checksums.txt" | sha256sum -c -
+          tar -xzf "${tarball}" trivy
+          sudo install -m 0755 trivy /usr/local/bin/trivy
+          rm -f trivy "${tarball}" "trivy_${TRIVY_VERSION}_checksums.txt"
+
+      - name: Resolve the Python dependencies
+        # requirements.txt uses version ranges, which Trivy cannot match to
+        # advisories. Install them and scan the exact versions that resolve.
+        run: |
+          python -m venv /tmp/audit-venv
+          /tmp/audit-venv/bin/pip install -q -r requirements.txt
+          mkdir -p /tmp/resolved
+          /tmp/audit-venv/bin/pip freeze > /tmp/resolved/requirements.txt
+          cat /tmp/resolved/requirements.txt
+
+      - name: Scan resolved dependencies for HIGH and CRITICAL CVEs
+        run: trivy fs --scanners vuln --severity HIGH,CRITICAL --exit-code 1 /tmp/resolved
+
+      - name: Scan the repo for secrets
+        run: trivy fs --scanners secret --exit-code 1 .

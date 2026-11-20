@@ -161,6 +161,22 @@ either in `ELEVENLABS_API_KEY` or in SSM (see above). AWS credentials
 needed for the SSM fallback and for the legacy YAML pipeline, which uses
 Bedrock and Polly.
 
+## Security checks
+
+`.github/workflows/security.yml` runs on every push, every pull request
+and weekly:
+
+- **Talisman** scans every tracked file for secrets. `.talismanrc` holds
+  the reviewed allowlist (the pinned CDN integrity hashes, binary logos,
+  `.env.example`, and the fake API key shown in the MCP demo) and fails
+  only on high or critical findings.
+- **Trivy** checks the Python dependencies, resolved to exact versions,
+  for HIGH and CRITICAL CVEs, and scans the repo for secrets.
+
+To catch secrets before they are committed, install
+[Talisman](https://github.com/thoughtworks/talisman) as a local
+pre-commit hook. It reads the same `.talismanrc`.
+
 ## Serving previews
 
 Serve from the repo root. The scenes are compiled in the browser by
