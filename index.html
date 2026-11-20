@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OutcomeOps Video Production Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050910;
+    --bg-panel: #0a111d;
+    --ink: #f4f6fb;
+    --ink-dim: #8a97ad;
+    --ink-mute: #4d5a70;
+    --rule: rgba(255,255,255,0.08);
+    --rule-soft: rgba(255,255,255,0.04);
+    --cyan: #22d3ee;
+    --amber: #fbbf24;
+  }
+  html, body { margin: 0; padding: 0; min-height: 100%; background: var(--bg); color: var(--ink); font-family: 'Inter', system-ui, sans-serif; }
+  a { color: var(--cyan); }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 64px 48px 96px; }
+  header { padding-bottom: 40px; border-bottom: 1px solid var(--rule); margin-bottom: 48px; }
+  h1 { font-weight: 600; font-size: 52px; letter-spacing: -0.035em; margin: 0 0 16px; line-height: 1.05; }
+  h1 .accent { color: var(--cyan); }
+  .lede { font-size: 18px; color: var(--ink-dim); font-weight: 300; letter-spacing: -0.01em; max-width: 760px; line-height: 1.55; margin: 0; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+  .note { background: rgba(251,191,36,0.05); border-left: 2px solid var(--amber); padding: 12px 16px; margin-top: 28px; font-size: 13px; color: var(--ink-dim); line-height: 1.6; border-radius: 0 3px 3px 0; max-width: 760px; }
+  .note strong { color: var(--amber); font-weight: 500; }
+  .note code { font-family: 'JetBrains Mono', monospace; color: var(--ink); font-size: 12px; }
+  section { margin-bottom: 56px; }
+  .section-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 24px; }
+  .section-head h2 { font-weight: 600; font-size: 24px; letter-spacing: -0.02em; margin: 0; }
+  .section-head .count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-mute); letter-spacing: 0.18em; }
+  .section-blurb { font-size: 14px; color: var(--ink-dim); margin: -16px 0 24px; max-width: 720px; line-height: 1.5; }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .card { background: var(--bg-panel); border: 1px solid var(--rule); border-radius: 6px; padding: 20px 24px; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; }
+  .card .info { min-width: 0; }
+  .card .name { font-weight: 500; font-size: 18px; letter-spacing: -0.015em; margin: 0 0 4px; }
+  .card .name .label-mono { font-family: 'JetBrains Mono', monospace; color: var(--cyan); font-size: 13px; font-weight: 500; margin-right: 12px; letter-spacing: 0.04em; }
+  .card .name .dur { color: var(--ink-mute); font-size: 13px; font-weight: 400; margin-left: 8px; }
+  .card .desc { font-size: 13px; color: var(--ink-dim); margin: 0; line-height: 1.45; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .actions a, .links a { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 14px; border-radius: 3px; text-decoration: none; white-space: nowrap; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  a.primary { background: var(--cyan); color: #050910; }
+  a.primary:hover { background: #67e8f9; }
+  a.secondary { color: var(--ink); border: 1px solid var(--rule); }
+  a.secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+  a.muted { color: var(--ink-mute); border: 1px solid var(--rule-soft); }
+  a.muted:hover { color: var(--ink-dim); }
+  footer { margin-top: 72px; padding-top: 32px; border-top: 1px solid var(--rule); font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-mute); letter-spacing: 0.16em; text-transform: uppercase; line-height: 2; }
+  footer a { color: var(--ink-dim); text-decoration: none; }
+  footer a:hover { color: var(--cyan); }
+  @media (max-width: 760px) {
+    .wrap { padding: 32px 16px 64px; }
+    h1 { font-size: 34px; }
+    .card { grid-template-columns: 1fr; gap: 16px; }
+    .actions { justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Product demos<span class="accent">,</span> compiled<span class="accent">.</span></h1>
+  <p class="lede">The scenes behind the published OutcomeOps videos. Each one is a small React app on a single animation clock, timed to narration timestamps and rendered in headless Chromium. No video editor was opened for any of them. Click <em>Preview</em> to play the live scene in your browser, or <em>Source</em> to read how it was built.</p>
+  <div class="links">
+    <a class="primary" href="https://github.com/bcarpio/outcomeops-video-production-pipeline" target="_blank" rel="noopener">This repo on GitHub</a>
+    <a class="secondary" href="https://www.youtube.com/@OutcomeOps" target="_blank" rel="noopener">YouTube channel</a>
+    <a class="secondary" href="https://github.com/bcarpio/outcome-ops-ai-assist" target="_blank" rel="noopener">OutcomeOps (Apache 2.0)</a>
+    <a class="secondary" href="https://www.briancarpio.com/blog/compiled-product-demos" target="_blank" rel="noopener">How it works</a>
+  </div>
+  <p class="note"><strong>Previews play silently.</strong> Narration audio is not committed, so scenes run without sound until you synthesize it with your own ElevenLabs key. Serve the repo root over HTTP, not <code>file://</code>: <code>python3 -m http.server 8765</code>, then open <code>http://localhost:8765/</code>. The finished, narrated videos are on the YouTube channel.</p>
+</header>
+
+<section>
+  <div class="section-head">
+    <h2>Product demos</h2>
+    <span class="count">9 SCENES</span>
+  </div>
+  <p class="section-blurb">Rebuilt OutcomeOps UI driven by staged data and a single animation clock. These are the scenes the blog post describes.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">TRANSPARENCY</span>Full Transparency <span class="dur">1:41</span></p>
+        <p class="desc">Audit dashboard, analytics dashboard, a real refusal alert, and the deployment and data residency story, for InfoSec and compliance buyers.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/transparency" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/transparency/thumbnail.html" target="_blank">Thumb</a>
+        <a class="secondary" href="demos/transparency/" target="_blank">Preview</a>
+        <a class="primary" href="https://www.youtube.com/watch?v=RpCEbzA0_Zs" target="_blank" rel="noopener">YouTube</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">CHAT</span>Chat: engineer asks <span class="dur">0:54</span></p>
+        <p class="desc">An engineer asks a question grounded in their own architecture. Six beats: ask, search, grounded answer, code, sources, next question.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/chat" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/chat/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">CHAT</span>Chat: analytics <span class="dur">1:35</span></p>
+        <p class="desc">Long-form analytics walkthrough, using the more expressive ElevenLabs voice tuning.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/chat-analytics" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/chat-analytics/thumbnail.html" target="_blank">Thumb</a>
+        <a class="secondary" href="demos/chat-analytics/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">CHAT</span>Chat: CVE <span class="dur">1:23</span></p>
+        <p class="desc">A security workflow. An engineer asks about a CVE and the answer is grounded in the repo&#x27;s dependencies and ADRs.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/chat-cve" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/chat-cve/thumbnail.html" target="_blank">Thumb</a>
+        <a class="secondary" href="demos/chat-cve/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">JIRA</span>Jira to PR <span class="dur">1:19</span></p>
+        <p class="desc">An engineer pastes a Jira ticket into chat; the agent grounds it in the codebase and drafts the pull request.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/jira-to-pr" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/jira-to-pr/thumbnail.html" target="_blank">Thumb</a>
+        <a class="secondary" href="demos/jira-to-pr/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">MCP</span>MCP: Bearer token setup <span class="dur">1:54</span></p>
+        <p class="desc">Two acts: create an API key and paste the Bearer token into the connection snippet, then query OutcomeOps from Claude Desktop over MCP.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/mcp-setup" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/mcp-setup/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">GRAPH</span>Refactor blast radius <span class="dur">0:56</span></p>
+        <p class="desc">Unknown callers radiating from a shared function, the original authors long gone, and the code graph answering what would break.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/refactor-blast-radius" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/refactor-blast-radius/thumbnail.html" target="_blank">Thumb</a>
+        <a class="secondary" href="demos/refactor-blast-radius/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">GRAPH</span>Impact analysis with the code graph <span class="dur">1:09</span></p>
+        <p class="desc">An engineer asks what breaks if a function is removed. The router picks RAG plus the code graph and the answer cites both.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/gkg-impact-analysis" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/gkg-impact-analysis/thumbnail.html" target="_blank">Thumb</a>
+        <a class="secondary" href="demos/gkg-impact-analysis/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">CTA</span>Closing lockup</p>
+        <p class="desc">The OutcomeOps call to action, rendered separately and stitched onto the end of each demo so a recut never needs a re-record.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/cta" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/cta/" target="_blank">Preview</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="section-head">
+    <h2>Explainers</h2>
+    <span class="count">6 SCENES</span>
+  </div>
+  <p class="section-blurb">Longer pieces that teach a concept, built on the same Stage and narration pipeline.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">EXPLAIN</span>What Is Outcome Engineering? <span class="dur">2:02</span></p>
+        <p class="desc">Outcome engineering as a role, not a consulting service: the three pillars and how it connects to context engineering.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/outcome-engineering" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/outcome-engineering/thumbnail.html" target="_blank">Thumb</a>
+        <a class="muted" href="demos/outcome-engineering/thumbnail-b.html" target="_blank">Thumb B</a>
+        <a class="secondary" href="demos/outcome-engineering/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">EXPLAIN</span>Context Engineering vs. Prompt Engineering <span class="dur">0:59</span></p>
+        <p class="desc">Three tiers: prompt engineering, context engineering trapped at the repo edge, and organization-wide context.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/context-vs-prompt-engineering" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/context-vs-prompt-engineering/thumbnail.html" target="_blank">Thumb</a>
+        <a class="secondary" href="demos/context-vs-prompt-engineering/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">EXPLAIN</span>RAG vs Graph: Why You Need Both <span class="dur">1:03</span></p>
+        <p class="desc">RAG matches meaning. A code knowledge graph reads wiring. Questions about callers need the graph.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/rag-vs-graph" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/rag-vs-graph/thumbnail.html" target="_blank">Thumb</a>
+        <a class="secondary" href="demos/rag-vs-graph/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">EXPLAIN</span>What Is an AI Engineering Platform? <span class="dur">7:23</span></p>
+        <p class="desc">The category shift from AI coding tool to AI engineering platform, and its five components: context, generation, output, audit, deployment.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/what-is-ai-engineering-platform" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/what-is-ai-engineering-platform/thumbnail.html" target="_blank">Thumb</a>
+        <a class="secondary" href="demos/what-is-ai-engineering-platform/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">EXPLAIN</span>The Layer Underneath <span class="dur">3:10</span></p>
+        <p class="desc">The organizational intelligence layer, framed for the CTO and VP of Engineering: every team&#x27;s knowledge in one place.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/intelligence-layer" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/intelligence-layer/thumbnail.html" target="_blank">Thumb</a>
+        <a class="secondary" href="demos/intelligence-layer/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">ORIGIN</span>Origin Story <span class="dur">3:56</span></p>
+        <p class="desc">The pattern behind OutcomeOps, traced across five platform shifts from 2012 to 2026.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/origin" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/origin/" target="_blank">Preview</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="section-head">
+    <h2>Integrations</h2>
+    <span class="count">2 SCENES</span>
+  </div>
+  <p class="section-blurb">How OutcomeOps sits next to the tools teams already use.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">KIRO</span>OutcomeOps as a Kiro Power <span class="dur">1:55</span></p>
+        <p class="desc">Kiro drafts a payment refund handler and OutcomeOps grounds it over MCP in the organization&#x27;s real standards as it is written.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/kiro-power" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/kiro-power/thumbnail.html" target="_blank">Thumb</a>
+        <a class="secondary" href="demos/kiro-power/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">BEDROCK</span>OutcomeOps + OpenAI on Bedrock <span class="dur">2:16</span></p>
+        <p class="desc">Pick the model, keep the substrate: OpenAI models on Amazon Bedrock with the same organizational context underneath.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/openai-bedrock-power" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/openai-bedrock-power/thumbnail.html" target="_blank">Thumb</a>
+        <a class="secondary" href="demos/openai-bedrock-power/" target="_blank">Preview</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="section-head">
+    <h2>Comparison and debate</h2>
+    <span class="count">2 SCENES</span>
+  </div>
+  <p class="section-blurb">Two-sided formats.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">VS</span>Search finds it. OutcomeOps ships it. <span class="dur">1:22</span></p>
+        <p class="desc">Split screen against enterprise search: the same engineering questions, two kinds of answer.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/vs-glean" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/vs-glean/thumbnail.html" target="_blank">Thumb</a>
+        <a class="secondary" href="demos/vs-glean/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">DEBATE</span>Three Objections, One Answer <span class="dur">0:54</span></p>
+        <p class="desc">Two voices: a skeptical CISO raises the three objections regulated organizations have to AI coding, and each gets an answer.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/debate-regulated" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/debate-regulated/" target="_blank">Preview</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="section-head">
+    <h2>Role shorts</h2>
+    <span class="count">7 SCENES</span>
+  </div>
+  <p class="section-blurb">One team, one question, a cited answer. Built on a shared template.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">SEC</span>Security <span class="dur">0:31</span></p>
+        <p class="desc">A security engineer&#x27;s question, answered with citations.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/role-security" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/role-security/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">OPS</span>Support and Operations <span class="dur">0:32</span></p>
+        <p class="desc">An on-call engineer&#x27;s question, answered with citations.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/role-operations" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/role-operations/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">PROD</span>Product <span class="dur">0:29</span></p>
+        <p class="desc">A product owner&#x27;s question, answered with citations.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/role-product" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/role-product/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">ENG</span>Engineering <span class="dur">0:33</span></p>
+        <p class="desc">An engineering lead&#x27;s question, answered with citations.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/role-engineering" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/role-engineering/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">COMP</span>Compliance and Audit <span class="dur">0:30</span></p>
+        <p class="desc">A compliance lead&#x27;s question, answered with citations.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/role-compliance" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/role-compliance/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">ARCH</span>Architecture and Leadership <span class="dur">0:29</span></p>
+        <p class="desc">A chief architect&#x27;s question, answered with citations.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/role-architecture" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/role-architecture/" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">REEL</span>Every Team: sizzle reel <span class="dur">2:34</span></p>
+        <p class="desc">The role shorts stitched into one reel, with its own intro and outro scenes.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/sizzle-every-team" target="_blank" rel="noopener">Source</a>
+        <a class="muted" href="demos/sizzle-every-team/intro.html" target="_blank">Intro</a>
+        <a class="muted" href="demos/sizzle-every-team/outro.html" target="_blank">Outro</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="section-head">
+    <h2>Marketing variations</h2>
+    <span class="count">4 SCENES</span>
+  </div>
+  <p class="section-blurb">Four cuts of the same marketing video from one scene folder, picked with a query parameter.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">CUT-A</span>Your code never leaves <span class="dur">0:46</span></p>
+        <p class="desc">Opens on IP exfiltration and closes on your AWS account, your Bedrock, your keys.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/marketing" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/marketing/?variation=A" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">CUT-B</span>Organizational intelligence <span class="dur">0:46</span></p>
+        <p class="desc">Beyond code: Jira, Confluence, SharePoint and the full codebase as one map of the company.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/marketing" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/marketing/?variation=B" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">CUT-C</span>Engineers own outcomes, not outputs <span class="dur">0:32</span></p>
+        <p class="desc">The manifesto cut. Philosophy first.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/marketing" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/marketing/?variation=C" target="_blank">Preview</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="info">
+        <p class="name"><span class="label-mono">CUT-G</span>A day at an OutcomeOps shop <span class="dur">0:42</span></p>
+        <p class="desc">08:00 standup, agents work through the day, 16:00 a human reviews the results.</p>
+      </div>
+      <div class="actions">
+        <a class="muted" href="https://github.com/bcarpio/outcomeops-video-production-pipeline/tree/main/demos/marketing" target="_blank" rel="noopener">Source</a>
+        <a class="secondary" href="demos/marketing/?variation=G" target="_blank">Preview</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  30 scenes · <a href="demos/">demos/</a> · <a href="https://github.com/bcarpio/outcomeops-video-production-pipeline/blob/main/README.md" target="_blank" rel="noopener">README</a> · <a href="https://github.com/bcarpio/outcomeops-video-production-pipeline/blob/main/CLAUDE.md" target="_blank" rel="noopener">CLAUDE.md</a> · Apache 2.0
+</footer>
+
+</div>
+</body>
+</html>
