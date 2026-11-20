@@ -57,7 +57,8 @@ templates.
 5. `python export_demo.py demos/<name>` (`--fps 30` for drafts).
 
 The ElevenLabs key comes from `ELEVENLABS_API_KEY` in the environment or in
-`.env` in the repo root.
+`.env` in the repo root. Previews and exports need internet access: scenes
+load React, Babel and fonts from unpkg.com and Google Fonts.
 
 ## Your product
 

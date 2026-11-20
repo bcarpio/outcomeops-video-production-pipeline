@@ -170,6 +170,12 @@ playwright install chromium
 sudo apt-get install -y ffmpeg   # macOS: brew install ffmpeg
 ```
 
+Previews and exports need internet access: each scene's `index.html`
+loads React, ReactDOM and Babel from unpkg.com and its fonts from Google
+Fonts. Offline, or behind a proxy that blocks those hosts, the Stage
+renders blank. To work offline, download those files into the repo and
+point the `<script>` and font links at the local copies.
+
 Credentials: for the demos pipeline you only need an ElevenLabs key,
 either in `ELEVENLABS_API_KEY` (environment or a `.env` file; copy
 `.env.example`) or in SSM (see above). No AWS account is needed unless
