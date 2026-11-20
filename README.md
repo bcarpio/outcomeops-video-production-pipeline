@@ -12,7 +12,8 @@ this file is the map.
 [![Audit. Cost. Control. Why InfoSec Picks OutcomeOps](https://img.youtube.com/vi/RpCEbzA0_Zs/maxresdefault.jpg)](https://www.youtube.com/watch?v=RpCEbzA0_Zs)
 
 [Audit. Cost. Control. Why InfoSec Picks OutcomeOps](https://www.youtube.com/watch?v=RpCEbzA0_Zs)
-was compiled by this pipeline: no screen recording, no editor. Its
+was compiled by this pipeline. The product was never screen recorded
+and no editor was opened. Its
 source is [`demos/transparency/`](demos/transparency/), and you can
 play the scene yourself from the catalog (see "Serving previews"
 below).
