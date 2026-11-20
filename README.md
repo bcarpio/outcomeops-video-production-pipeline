@@ -4,8 +4,16 @@ The pipeline that produces the [OutcomeOps](https://www.outcomeops.ai)
 product and marketing videos entirely from text files in git. No video
 editor is ever opened. Every scene is a small React app on a single
 animation clock, narration timestamps drive the timing, and headless
-Chromium renders the MP4. `CLAUDE.md` is the full operating manual;
-this file is the map.
+Chromium renders the MP4. This file is the map. `CLAUDE.md` is
+OutcomeOps' own manual for Claude Code, kept as a worked example;
+`CLAUDE.template.md` is the product-neutral version to start from.
+
+**Who it's for.** Engineers, or a coding agent like Claude Code, making
+short narrated product explainers: typed text, cards, rebuilt UI,
+dashboards, 30 seconds to a few minutes, remade whenever the product or
+the script changes. It is not a video editor: you write React against
+seconds. It is the wrong tool for footage, people on camera, b-roll, or
+a team that wants to edit on a timeline.
 
 ## Example output
 
@@ -31,34 +39,38 @@ material, kept as worked examples. To make a video for your product:
    `http://localhost:8765/demos/my-video/`. Edit `scene.jsx` until the
    visuals are right. No audio is needed yet, so this costs nothing.
 4. Write `narration.txt` with a `[[B0]]`, `[[B1]]`, ... marker on its
-   own line before each beat, one beat per visual moment.
+   own line before each beat, one beat per visual moment. ElevenLabs has
+   a per-request character limit (see their docs for your model), so
+   split a long video into several scenes rather than one huge script.
 5. Synthesize the voice and the timings:
    ```bash
    ELEVENLABS_API_KEY=... python scripts/synth.py demos/my-video/narration.txt
    ```
    (or put `ELEVENLABS_API_KEY=...` in a `.env` file in the repo root).
    It writes `narration.mp3` and `beats.js`; the starter scene loads
-   `beats.js`, so its animation and duration follow the voice-over with
-   nothing to copy. The default voice is Drew, one of ElevenLabs' stock
+   `beats.js`, so each beat starts when its line does and the video is as
+   long as the voice-over, with nothing to copy. Motion *inside* a beat
+   (fades, typing, rows appearing) is still yours: the starter expresses
+   it as fractions of each beat's length so a re-recorded line reflows,
+   and a new `[[B4]]` needs its own visual in `scene.jsx`. The default voice is Drew, one of ElevenLabs' stock
    voices; pass `--voice <voice_id>` to use another. Commercial use of
    the audio needs a paid ElevenLabs plan.
 6. Export: `python export_demo.py demos/my-video` writes
    `output/my-video/final.mp4` (1920x1080, 60 fps). Use `--fps 30`
    for quicker drafts.
 
-To have Claude Code build scenes for you, give it the same thing this
-repo gives it for OutcomeOps: a CLAUDE.md that catalogs your product's
-source repo, its routes and page components, stable selectors, and where
-its styling lives. The sections of `CLAUDE.md` marked **(OutcomeOps
-example)** show the shape; replace them with yours. Then ask for a scene
-the way you would describe the video to an editor.
+To have Claude Code build scenes for you, copy `CLAUDE.template.md` over
+`CLAUDE.md` and fill in your product: where its UI source lives, its
+routes and page components, and where its styling lives. That catalog is
+what keeps scenes faithful to the real product. Then ask for a scene the
+way you would describe the video to an editor.
 
-The `demos/` folder holds the real scenes behind the published
-OutcomeOps videos, with staged data only. Use them as worked examples:
-the engine (`animations.jsx`, `export_demo.py`, `lib/compositor.py`,
-the synth scripts) is product-agnostic, and the pattern of pointing
-`CLAUDE.md` at your own product's source repo is the part worth
-copying.
+The other folders in `demos/` are the real scenes behind the published
+OutcomeOps videos, with staged data only. They are worked examples, not
+templates: they span the layouts this pipeline grew through (`scene.jsx`
+vs `scenes.jsx`, several narration files, one-off `scripts/synth_*.py`),
+and some palettes are admitted approximations of the app. Copy
+`demos/starter/`, and read the others for ideas.
 
 Generated media (`*.mp3`, `*.mp4`, `output/`) is not committed. Scenes
 preview silently until you synthesize narration with your own
@@ -68,13 +80,25 @@ ElevenLabs key; the published videos are on the
 Licensed under Apache 2.0, like
 [OutcomeOps itself](https://github.com/bcarpio/outcome-ops-ai-assist).
 
-A finished video ships three artifacts:
+What a finished OutcomeOps video consists of:
 
-| Artifact | Where |
-|---|---|
-| Final MP4 (H.264/AAC, faststart) | `output/<name>/final.mp4` |
-| YouTube thumbnail (1280×720 PNG) | `output/<name>/thumbnail.png` |
-| Title/description/tags for YouTube Studio | `output/<name>/youtube-metadata.md` |
+| Artifact | Where | Made by |
+|---|---|---|
+| Final MP4 (H.264/AAC, faststart) | `output/<name>/final.mp4` | `export_demo.py` |
+| YouTube thumbnail (1280×720 PNG) | `output/<name>/thumbnail.png` | `scripts/screenshot_thumbnail.py` from the scene's `thumbnail.html` |
+| Title, description and tags | `output/<name>/youtube-metadata.md` | written by hand (or by Claude Code); nothing generates it |
+
+## How this compares
+
+[Remotion](https://www.remotion.dev) and
+[Motion Canvas](https://motioncanvas.io) are established tools built on
+the same idea: video as code, rendered frame by frame. Reach for them if
+you want a larger component ecosystem, a studio UI, or cloud rendering;
+check Remotion's license terms for company use. This repo is smaller and
+narrower: no build step (scenes are plain JSX compiled in the browser),
+Apache 2.0, narration timestamps from ElevenLabs drive the beats, and the
+CLAUDE.md pattern is designed for a coding agent writing scenes against
+your real product's source.
 
 ## Main pipeline: React demo scenes (`demos/*/`)
 
@@ -123,35 +147,16 @@ The flow, in order:
    narration via `lib/compositor.py`. Expect about 0.1 s per frame
    (roughly 6 minutes for a 60-second video); `--fps 30` halves that
    for drafts.
-4. **Thumbnail + metadata.** `scripts/screenshot_thumbnail.py`
-   screenshots `thumbnail.html` to `output/<name>/thumbnail.png`; write
-   `output/<name>/youtube-metadata.md` (recommended title, A/B
-   alternates, description, tags — plain ASCII).
+4. **Thumbnail + metadata.** `scripts/screenshot_thumbnail.py
+   demos/<name>/thumbnail.html output/<name>/thumbnail.png` renders the
+   thumbnail; `output/<name>/youtube-metadata.md` (title, A/B
+   alternates, description, tags) is written by hand.
 
 **ElevenLabs API key.** The scripts use `ELEVENLABS_API_KEY` from the
 environment when it is set. Otherwise they read it from AWS SSM
 Parameter Store at `/outcomeops-video-gen/eleven-labs` (SecureString),
 which is how this repo runs for OutcomeOps. SSM is our choice, not a
 requirement. Whichever you use, never hardcode or commit the key.
-
-## Legacy pipeline: scene YAMLs (`generate.py`)
-
-The original pipeline films the live product instead of an authored
-scene: a YAML in `scenes/` names a URL and a list of interactions
-(click/scroll/type); Claude Sonnet on AWS Bedrock writes the narration
-from `brand_context.md`, AWS Polly Neural (default voice: Joanna)
-renders it, Playwright records the real site for exactly the audio's
-duration, and ffmpeg stitches `output/<scene>/final.mp4`.
-
-```bash
-python generate.py scenes/example.yaml     # smoke test
-# --skip-narration / --skip-recording to iterate on one stage
-# --headed to watch the browser and debug selectors
-```
-
-Still functional (used for the `outcomeops-ai-*` site walkthroughs),
-but new work should use the demos pipeline above. Requires Bedrock
-model access for `us.anthropic.claude-sonnet-4-6` in your region.
 
 ## Setup
 
@@ -167,10 +172,9 @@ sudo apt-get install -y ffmpeg   # macOS: brew install ffmpeg
 
 Credentials: for the demos pipeline you only need an ElevenLabs key,
 either in `ELEVENLABS_API_KEY` (environment or a `.env` file; copy
-`.env.example`) or in SSM (see above). AWS credentials
-(env or `~/.aws/credentials`, `AWS_REGION` defaults to `us-west-2`) are
-needed for the SSM fallback and for the legacy YAML pipeline, which uses
-Bedrock and Polly.
+`.env.example`) or in SSM (see above). No AWS account is needed unless
+you want the SSM fallback, which uses your normal AWS credentials
+(`AWS_REGION` defaults to `us-west-2`).
 
 ## Security checks
 

@@ -4,7 +4,9 @@ This file holds two kinds of guidance. Most of it is about the pipeline
 and applies to any product. The sections marked **(OutcomeOps example)**
 describe OutcomeOps itself: its product surfaces, brand voice and
 narrator settings. If you are using this repo for your own product,
-replace those sections with your product's equivalents and keep the rest.
+replace those sections with your product's equivalents and keep the rest,
+or start from `CLAUDE.template.md`, which has only the product-neutral
+parts plus placeholders for yours.
 
 ## What this tool is
 
@@ -28,10 +30,9 @@ every run.
 `demos/starter/` is the minimal scene to copy. The other folders in
 `demos/` are OutcomeOps' own videos, kept as worked examples.
 
-The older **YAML pipeline** (`generate.py`, `scenes/`) films a live
-website instead: Bedrock writes narration, Polly speaks it, Playwright
-records the real site. It still works but is legacy; see "Legacy
-pipeline" below.
+The only external service the pipeline calls is ElevenLabs, for the
+voice. No AWS account is needed (OutcomeOps happens to keep its
+ElevenLabs key in AWS SSM; see "Secrets").
 
 ## Repo layout
 
@@ -47,8 +48,7 @@ scripts/synth.py            — ElevenLabs synthesis for any scene
 scripts/synth_*.py          — per-scene synth scripts (OutcomeOps examples)
 scripts/screenshot_thumbnail.py — renders a scene's thumbnail.html to PNG
 export_demo.py              — frame-stepped export to MP4
-lib/compositor.py           — ffmpeg encoding (frames → MP4, recording → MP4)
-generate.py, scenes/, lib/{script,narrator,recorder}.py — legacy YAML pipeline
+lib/compositor.py           — ffmpeg encoding (frames + narration → MP4)
 output/                     — generated artifacts (gitignored)
 ```
 
@@ -59,8 +59,10 @@ environment variable when it is set (`scripts/synth.py` also reads it
 from a `.env` file in the repo root; `.env` is gitignored). Otherwise they fall back to **AWS
 SSM Parameter Store**, which is how this repo runs for OutcomeOps: keys
 live under `/outcomeops-video-gen/*` as `SecureString` parameters,
-fetched with `boto3` and the same AWS credentials the rest of the
-pipeline uses. Either way, never hardcode a key or commit it.
+fetched with `boto3` and your AWS credentials. That fallback is
+OutcomeOps' setup, not a requirement: with `ELEVENLABS_API_KEY` set, no
+AWS account or credentials are needed. Either way, never hardcode a key
+or commit it.
 
 | Parameter | Used by |
 |---|---|
@@ -85,50 +87,10 @@ When adding a new third-party key:
 
 ## Hard rules
 
-- **Use AWS Bedrock for Claude calls.** Never reach for the direct
-  Anthropic API or `ANTHROPIC_API_KEY` — both AI calls (Bedrock + Polly)
-  go through AWS credentials. The Anthropic SDK supports Bedrock via
-  `anthropic.AnthropicBedrock(aws_region=...)` — same shape as the
-  direct client. The only carve-out is if a feature ships on the direct
-  Anthropic API first; in that case ask before adding the dependency.
-- **Default model: `us.anthropic.claude-sonnet-4-6`** — matches what
-  the parent product uses in prod. Don't escalate to Opus for narration
-  generation; Sonnet is more than capable here and 5x cheaper.
 - **Never commit `.env`, `output/`, or `venv/`.** All three are in
   `.gitignore`.
-- **Never put customer names in scene YAMLs that get committed.**
-  Generic ICP language only.
-
-## Legacy pipeline: YAML scenes (`generate.py`)
-
-This section only applies to `generate.py`, which films a live site.
-New videos should use `demos/` scenes. A scene YAML has:
-
-| Field | Required | Notes |
-|---|---|---|
-| `name` | ✅ | Used as the output subdirectory |
-| `url` | ✅ | The page Playwright loads |
-| `viewport` | ❌ | Defaults to 1920×1080 |
-| `target_seconds` | ❌ | Hint to Claude; actual length = audio length |
-| `narration_prompt` | one of | Sent to Claude with `brand_context.md` |
-| `narration` | one of | Verbatim text — skips Claude entirely |
-| `voice` | ❌ | Polly voice (default `Joanna`) |
-| `interactions` | ❌ | Step-by-step DSL (see below) |
-
-Interaction step types (each is a single-key dict):
-
-- `{wait_for: "selector", timeout: 5000}` — block until selector appears
-- `{wait: 3}` — sleep N seconds
-- `{click: "selector"}`
-- `{hover: "selector"}`
-- `{type: "selector", text: "..."}`
-- `{scroll: 400}` — scroll window down N pixels
-- `{goto: "https://..."}` — navigate to a different URL
-
-Recorder synchronizes to the audio: Polly first → ffprobe measures
-duration → Playwright records for that many seconds → ffmpeg combines.
-If your interactions finish before the audio, the page just sits idle
-until the audio ends.
+- **Never put real customer names, repositories or tickets in a scene.**
+  Scenes are committed source; use staged data and generic language.
 
 ## Visual fidelity: the product's styles are the source of truth
 
@@ -204,7 +166,7 @@ When writing scenes for the app, look for `data-test=` attributes
 first, otherwise use `button[title='...']` (every nav icon has a title)
 or text-content selectors like `button:text('Save Budget')`.
 
-## Brand voice (OutcomeOps example; also in `brand_context.md`)
+## Brand voice (OutcomeOps example)
 
 - Lead with concrete outcomes (numbers, time savings), not abstractions
 - Avoid filler: "in today's fast-paced world", "imagine if", "unlock"
@@ -236,7 +198,7 @@ speak in the product's own voice.
 - The product speaking about itself in first person ("we generate…",
   "our platform…"). Narrator frames the *scene*, not the pitch.
 
-If the Polly voice-over ever sounds like terse marketing copy, stop and
+If the voice-over ever sounds like terse marketing copy, stop and
 reshape it around "what's happening right now, and what the persona can
 now see/do."
 
@@ -244,9 +206,8 @@ now see/do."
 
 Everything under `demos/` — `chat-analytics`, `chat-cve`, `jira-to-pr`,
 `marketing`, and the shared CTAs — uses **ElevenLabs Drew** as the
-narrator. Polly is reserved for the Playwright-driven scenes under
-`scenes/` (`generate.py`). If you're writing a new demo scene with
-pre-rendered audio, default to ElevenLabs Drew.
+narrator. If you're writing a new demo scene, default to ElevenLabs
+Drew.
 
 **API key:** OutcomeOps keeps it in SSM at `/outcomeops-video-gen/eleven-labs`.
 For your own setup, `ELEVENLABS_API_KEY` in the environment or in `.env`
@@ -426,17 +387,6 @@ scene's timings follow the new voice-over automatically.
 **Thumbnail:** design `demos/<name>/thumbnail.html`, then
 `python scripts/screenshot_thumbnail.py demos/<name>/thumbnail.html output/<name>/thumbnail.png`.
 
-### Legacy YAML pipeline
-
-**Add a YAML scene:** copy `scenes/example.yaml`, change `name`, `url`,
-and `narration_prompt`. Run `python generate.py scenes/<new>.yaml`.
-`--skip-narration` reuses the audio, `--skip-recording` reuses the
-video, and `--headed` shows the browser while you find selectors.
-
-**Change the Polly voice:** add `voice: Matthew` (or `Stephen`, `Ruth`,
-...) to the scene YAML; the default is `Joanna`. Polly Neural caps a
-request at 3000 characters, so split long scripts across scenes.
-
 ## Testing changes
 
 There are no unit tests yet. Smoke test for the demos pipeline, with no
@@ -448,9 +398,7 @@ python export_demo.py demos/starter --fps 30
 ```
 
 It should write a 20-second `output/starter/final.mp4`. Delete the
-silent `narration.mp3` afterwards. For the legacy pipeline, the smoke
-test is `python generate.py scenes/example.yaml`.
+silent `narration.mp3` afterwards.
 
-If adding tests, mock the boto3 + anthropic clients at the module
-boundary (`lib.script._get_client`, `lib.narrator._polly_client`) the
-same way the parent product does.
+If adding tests for the synth scripts, mock the ElevenLabs HTTP call
+(`synthesize` in `scripts/synth.py`) rather than hitting the API.

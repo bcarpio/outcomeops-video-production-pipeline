@@ -1,13 +1,4 @@
-"""Encode video + narration into a final MP4 via ffmpeg.
-
-Two entry points:
-
-- ``FrameEncoder``: takes PNG frames one at a time (from export_demo.py's
-  frame-stepped renderer) and encodes them with the narration. This is the
-  main path for ``demos/*`` scenes.
-- ``stitch``: combines an existing recording (webm) with audio. Used by the
-  legacy YAML pipeline (generate.py), which records the live site.
-"""
+"""Encode the frames rendered by export_demo.py, plus narration, into an MP4."""
 
 from __future__ import annotations
 
@@ -86,41 +77,3 @@ class FrameEncoder:
             raise RuntimeError(f"ffmpeg exited with {code}")
         if exc_type is None:
             log.info("wrote %s (%s bytes)", self.output, self.output.stat().st_size)
-
-
-def stitch(
-    *,
-    video: Path,
-    audio: Path,
-    output: Path,
-    video_start: float = 0.0,
-) -> Path:
-    """Combine a recorded ``video`` (webm) with ``audio`` (mp3) into an MP4.
-
-    - ``video_start`` skips N seconds at the head of the video (used to drop
-      the page-load prefix the recorder captures before interactions begin).
-    - ``-shortest`` ends the file when the shorter stream ends.
-
-    The recording is already limited-range video, so it is not range-converted
-    (doing that is what washed exports out to gray).
-    """
-    output.parent.mkdir(parents=True, exist_ok=True)
-
-    cmd = ["ffmpeg", "-y"]
-    if video_start > 0:
-        # -ss before -i gives fast seeking; re-encoding keeps it frame-accurate.
-        cmd.extend(["-ss", f"{video_start:.3f}"])
-    cmd.extend([
-        "-i", str(video),
-        "-i", str(audio),
-        "-vf", "scale=flags=lanczos+accurate_rnd+full_chroma_int+full_chroma_inp,format=yuv420p",
-        *X264_ARGS,
-        *AUDIO_ARGS,
-        "-shortest",
-        "-movflags", "+faststart",
-        str(output),
-    ])
-    log.info("ffmpeg -> %s (video_start=%.2fs)", output, video_start)
-    subprocess.run(cmd, check=True, capture_output=True, text=True)
-    log.info("wrote %s (%s bytes)", output, output.stat().st_size)
-    return output

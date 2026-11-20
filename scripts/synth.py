@@ -84,9 +84,18 @@ def get_api_key(ssm_param: str) -> str:
     key = os.environ.get("ELEVENLABS_API_KEY")
     if key:
         return key
-    import boto3  # only needed for the SSM fallback
-    ssm = boto3.client("ssm", region_name=os.environ.get("AWS_REGION", "us-west-2"))
-    return ssm.get_parameter(Name=ssm_param, WithDecryption=True)["Parameter"]["Value"]
+    # Optional fallback: read the key from AWS SSM (how OutcomeOps runs it).
+    try:
+        import boto3
+        ssm = boto3.client("ssm", region_name=os.environ.get("AWS_REGION", "us-west-2"))
+        return ssm.get_parameter(Name=ssm_param, WithDecryption=True)["Parameter"]["Value"]
+    except Exception as e:  # no boto3, no AWS credentials, no such parameter, ...
+        raise SystemExit(
+            "No ElevenLabs API key found.\n"
+            "Set ELEVENLABS_API_KEY in your environment or in a .env file in the repo root "
+            "(copy .env.example).\n"
+            f"(The optional AWS SSM fallback for {ssm_param} also failed: {type(e).__name__}: {e})"
+        )
 
 
 def synthesize(api_key: str, text: str, voice: str, model: str, settings: dict) -> dict:

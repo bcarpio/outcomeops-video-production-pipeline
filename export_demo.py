@@ -21,6 +21,9 @@ Usage:
     python export_demo.py demos/starter --fps 30
     python export_demo.py demos/starter --viewport 1080x1920
     python export_demo.py demos/starter --output /path/to/out.mp4
+    # A folder holding several scenes: pick the HTML file and audio explicitly
+    python export_demo.py demos/library --index-name "Scene Two.html" \
+        --audio demos/library/scene-two.mp3 --output output/scene-two/final.mp4
 """
 
 from __future__ import annotations
@@ -35,6 +38,7 @@ import socketserver
 import sys
 import threading
 import time
+import urllib.parse
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
@@ -144,7 +148,7 @@ def render_frames(url: str, viewport: dict[str, int], duration: float, fps: int,
         page.clock.pause_at(CLOCK_START_MS)
         page.add_init_script(RAF_JS)
 
-        page.goto(url, wait_until="load", timeout=60000)
+        page.goto(url, wait_until="networkidle", timeout=60000)
         page.wait_for_selector("audio", state="attached", timeout=30000)
         page.evaluate("() => document.fonts.ready.then(() => true)")
 
@@ -177,6 +181,9 @@ def main() -> int:
     ap.add_argument("--viewport", default="1920x1080",
                     help="Viewport WxH (default: 1920x1080)")
     ap.add_argument("--fps", type=int, default=60, help="Frames per second (default: 60)")
+    ap.add_argument("--index-name", default="index.html",
+                    help="HTML file inside demo_dir to render (default: index.html). "
+                         "Use when one folder holds several sibling scenes.")
     ap.add_argument("--audio", type=Path, default=None,
                     help="Audio file (default: <demo>/narration.mp3)")
     ap.add_argument("--query", default="",
@@ -195,7 +202,7 @@ def main() -> int:
     demo_dir = args.demo_dir.resolve()
     if not demo_dir.is_dir():
         sys.exit(f"not a directory: {demo_dir}")
-    index_html = demo_dir / "index.html"
+    index_html = demo_dir / args.index_name
     if not index_html.exists():
         sys.exit(f"missing {index_html}")
     audio = args.audio or (demo_dir / "narration.mp3")
@@ -217,7 +224,8 @@ def main() -> int:
     try:
         # ?export=1 lets the scene switch to its export layout (no playback bar).
         extra = f"&{args.query}" if args.query else ""
-        url = f"http://127.0.0.1:{port}/{demo_dir.name}/?export=1{extra}"
+        page_path = "" if args.index_name == "index.html" else urllib.parse.quote(args.index_name)
+        url = f"http://127.0.0.1:{port}/{demo_dir.name}/{page_path}?export=1{extra}"
         with FrameEncoder(output=output, fps=args.fps, audio=audio, duration=duration) as encoder:
             frames = render_frames(url, viewport, duration, args.fps, encoder)
         log.info("done: %s (%d frames)", output, frames)

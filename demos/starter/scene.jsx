@@ -10,6 +10,17 @@
 
 // Beat start times in seconds, from beats.js.
 const BEATS = window.BEATS;
+const DURATION = window.SCENE_DURATION;
+
+// Re-running synth.py moves the beat start times. Motion *inside* a beat is
+// still yours to choreograph, so every offset below is a fraction of the
+// beat's actual length (capped in seconds). A shorter or longer line then
+// reflows instead of overlapping the next beat.
+const ORDER = Object.keys(BEATS).sort((a, b) => BEATS[a] - BEATS[b]);
+const end = (b) => { const i = ORDER.indexOf(b); return i + 1 < ORDER.length ? BEATS[ORDER[i + 1]] : DURATION; };
+const span = (b) => end(b) - BEATS[b];
+// Seconds into beat b at fraction f of its length, capped at `max` seconds.
+const at = (b, f, max = Infinity) => BEATS[b] + Math.min(span(b) * f, max);
 
 // Palette. When this scene imitates your product's UI, take these values from
 // the product's own styles (its Tailwind classes, CSS variables or theme), and
@@ -35,7 +46,7 @@ const typed = (text, a, b, t) => text.slice(0, Math.floor(c01((t - a) / (b - a))
 const rise = (op, px = 10) => `translateY(${(1 - op) * px}px)`;
 
 function Title({ t }) {
-  const op = fade(t, BEATS.B0, BEATS.B0 + 0.8, BEATS.B1 - 0.6, BEATS.B1);
+  const op = fade(t, BEATS.B0, at('B0', 0.2, 0.8), end('B0') - Math.min(span('B0') * 0.15, 0.6), end('B0'));
   if (op <= 0) return null;
   return (
     <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: op }}>
@@ -47,10 +58,11 @@ function Title({ t }) {
 }
 
 function AskAndAnswer({ t }) {
-  const op = fade(t, BEATS.B1, BEATS.B1 + 0.6, BEATS.B3 - 0.6, BEATS.B3);
+  const op = fade(t, BEATS.B1, at('B1', 0.15, 0.6), end('B2') - Math.min(span('B2') * 0.12, 0.6), end('B2'));
   if (op <= 0) return null;
-  const q = typed(QUESTION, BEATS.B1 + 0.8, BEATS.B1 + 3.2, t);
-  const answerOp = fade(t, BEATS.B2, BEATS.B2 + 0.6);
+  // Type the question over the middle of its beat, whatever that beat's length.
+  const q = typed(QUESTION, at('B1', 0.15, 0.8), at('B1', 0.75), t);
+  const answerOp = fade(t, BEATS.B2, at('B2', 0.12, 0.6));
   return (
     <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, opacity: op }}>
       <div style={{ width: 1100, background: C.card, border: `1.5px solid ${C.rule}`, borderRadius: 14, padding: '22px 26px', fontSize: 26, color: C.ink, boxShadow: '0 2px 14px rgba(15,23,42,0.06)' }}>
@@ -58,7 +70,9 @@ function AskAndAnswer({ t }) {
       </div>
       <div style={{ width: 1100, background: C.card, border: `1.5px solid ${C.rule}`, borderRadius: 12, padding: '28px 30px', minHeight: 170, opacity: answerOp, transform: rise(answerOp) }}>
         {ROWS.map((row, i) => {
-          const rowOp = fade(t, BEATS.B2 + 0.8 + i * 0.9, BEATS.B2 + 1.4 + i * 0.9);
+          // Spread the rows across the first two thirds of the answer's beat.
+          const start = at('B2', 0.15 + (0.5 * i) / ROWS.length);
+          const rowOp = fade(t, start, start + Math.min(span('B2') * 0.1, 0.6));
           return (
             <div key={row} style={{ display: 'flex', gap: 12, fontFamily: F.mono, fontSize: 20, color: C.ink, margin: '8px 0', opacity: rowOp, transform: rise(rowOp, 6) }}>
               <span style={{ color: C.ok }}>&#10003;</span>{row}
@@ -71,7 +85,7 @@ function AskAndAnswer({ t }) {
 }
 
 function EndCard({ t }) {
-  const op = fade(t, BEATS.B3, BEATS.B3 + 0.8);
+  const op = fade(t, BEATS.B3, at('B3', 0.2, 0.8));
   if (op <= 0) return null;
   return (
     <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: op }}>
