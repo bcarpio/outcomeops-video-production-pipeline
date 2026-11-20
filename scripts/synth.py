@@ -14,12 +14,15 @@ once, then writes, next to the narration file:
 
   narration.mp3          the voice-over
   narration.marks.json   {"beats": {label: start_seconds}, "raw_duration": ...}
+  beats.js               window.BEATS and window.SCENE_DURATION, which the
+                         starter scene and export_demo.py read directly, so
+                         nothing has to be copied by hand
 
-and prints a BEATS constant to paste into scene.jsx plus the Stage duration
-to put in index.html.
+It also prints the same values, for scenes that keep their timings inline.
 
-API key: ELEVENLABS_API_KEY if set; otherwise the SSM SecureString named by
---ssm-param (this repo's own setup). Use whichever you prefer.
+API key: ELEVENLABS_API_KEY from the environment or a .env file in the repo
+root; otherwise the SSM SecureString named by --ssm-param (this repo's own
+setup). Use whichever you prefer, and never commit the key.
 
 Usage:
     python scripts/synth.py demos/starter/narration.txt
@@ -37,6 +40,13 @@ from pathlib import Path
 DEFAULT_VOICE = "q0IMILNRPxOgtBTS4taI"   # ElevenLabs "Drew", used for every OutcomeOps video
 DEFAULT_MODEL = "eleven_multilingual_v2"
 DEFAULT_SSM_PARAM = "/outcomeops-video-gen/eleven-labs"
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+try:  # optional: pick up ELEVENLABS_API_KEY from a .env in the repo root
+    from dotenv import load_dotenv
+    load_dotenv(REPO_ROOT / ".env")
+except ImportError:
+    pass
 SEP = "\n\n"
 
 
@@ -141,8 +151,17 @@ def main():
     if args.tail > 0:
         pad_tail(mp3, total)
 
-    print(f"Wrote {mp3} ({raw:.2f}s of speech, {total:.2f}s with tail) and narration.marks.json\n")
-    print("--- paste into scene.jsx ---")
+    beats_js = txt.with_name("beats.js")
+    beats_js.write_text(
+        "// Written by scripts/synth.py from narration.txt. Do not edit by hand;\n"
+        "// re-run the synth script after changing the narration.\n"
+        f"window.BEATS = {json.dumps({lbl: times[lbl] for lbl, _ in beats}, indent=2)};\n"
+        f"window.SCENE_DURATION = {total};\n"
+    )
+
+    print(f"Wrote {mp3} ({raw:.2f}s of speech, {total:.2f}s with tail), narration.marks.json and beats.js\n")
+    print("Scenes that load beats.js (like demos/starter) pick these up automatically.")
+    print("--- for scenes that keep timings inline instead of loading beats.js ---")
     print("const BEATS = {")
     for lbl, _ in beats:
         print(f"  {json.dumps(lbl)}: {times[lbl]:.2f},")

@@ -23,4 +23,4 @@ fileignoreconfig:
   # Template with the AWS variable names and empty values; no credentials.
   # Pinned by checksum so any edit to this file is scanned again.
   - filename: .env.example
-    checksum: 3d5903f463639f886448e8334c7cf46df813bb392955097f2d0c210d4b1d8dde
+    checksum: 4607dc8a5cad3d9dbfd84d53a036bde06c83f5b082e805240f420cf3fcd2de71

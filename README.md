@@ -36,11 +36,15 @@ material, kept as worked examples. To make a video for your product:
    ```bash
    ELEVENLABS_API_KEY=... python scripts/synth.py demos/my-video/narration.txt
    ```
-   Paste the `BEATS` block it prints into `scene.jsx` and set the
-   `duration` it prints in `index.html`. The default voice is the one
-   OutcomeOps uses; pass `--voice <voice_id>` for your own.
+   (or put `ELEVENLABS_API_KEY=...` in a `.env` file in the repo root).
+   It writes `narration.mp3` and `beats.js`; the starter scene loads
+   `beats.js`, so its animation and duration follow the voice-over with
+   nothing to copy. The default voice is Drew, one of ElevenLabs' stock
+   voices; pass `--voice <voice_id>` to use another. Commercial use of
+   the audio needs a paid ElevenLabs plan.
 6. Export: `python export_demo.py demos/my-video` writes
-   `output/my-video/final.mp4`.
+   `output/my-video/final.mp4` (1920x1080, 60 fps). Use `--fps 30`
+   for quicker drafts.
 
 To have Claude Code build scenes for you, give it the same thing this
 repo gives it for OutcomeOps: a CLAUDE.md that catalogs your product's
@@ -84,15 +88,17 @@ demos/<name>/
   narration.txt    — voice-over prose, split into [[B0]]..[[Bn]] beat markers
   narration.mp3    — synthesized voice-over (ElevenLabs Drew)
   narration.marks.json — beat label → start-time seconds
+  beats.js         — the same beat times plus the duration, for the scene to load
   thumbnail.html   — the YouTube thumbnail, designed in HTML
 ```
 
 `demos/starter/` is the minimal version of the same layout.
 
-The Stage runs one `requestAnimationFrame` clock; every visual is a
-pure function of that clock, so the scene at any given second looks the
-same every time. The export is a real-time capture, which is why the
-exporter disables throttling and backgrounding to hold 60fps.
+The Stage runs one animation clock; every visual is a pure function of
+that clock, so the scene at any given second looks the same every time.
+The exporter steps that clock exactly one frame at a time and
+screenshots each frame, so the MP4 is a true 60 fps, in exact sync with
+the narration, and identical on every run.
 
 The flow, in order:
 
@@ -109,10 +115,14 @@ The flow, in order:
    `narration.marks.json`, and prints the timing constants to paste
    into `scene.jsx`. Sync is exact, not eyeballed. Synthesize once;
    iterate on pace with ffmpeg `atempo` instead of re-synthing.
-3. **Export.** `python export_demo.py demos/<name>` records the scene
-   in headless Chromium (Playwright, autoplay on, throttling off, 60fps)
-   for the Stage's declared duration, then stitches with the narration
-   via `lib/compositor.py`.
+   `scripts/synth.py` also writes `beats.js`, which `demos/starter`
+   loads, so new scenes don't need any copying by hand.
+3. **Export.** `python export_demo.py demos/<name>` loads the scene in
+   headless Chromium with a paused fake clock, steps it 1/60 s per
+   frame, screenshots each frame, and encodes the frames with the
+   narration via `lib/compositor.py`. Expect about 0.1 s per frame
+   (roughly 6 minutes for a 60-second video); `--fps 30` halves that
+   for drafts.
 4. **Thumbnail + metadata.** `scripts/screenshot_thumbnail.py`
    screenshots `thumbnail.html` to `output/<name>/thumbnail.png`; write
    `output/<name>/youtube-metadata.md` (recommended title, A/B
@@ -129,7 +139,7 @@ requirement. Whichever you use, never hardcode or commit the key.
 The original pipeline films the live product instead of an authored
 scene: a YAML in `scenes/` names a URL and a list of interactions
 (click/scroll/type); Claude Sonnet on AWS Bedrock writes the narration
-from `brand_context.md`, AWS Polly Neural (default voice: Matthew)
+from `brand_context.md`, AWS Polly Neural (default voice: Joanna)
 renders it, Playwright records the real site for exactly the audio's
 duration, and ffmpeg stitches `output/<scene>/final.mp4`.
 
@@ -152,11 +162,12 @@ python3.12 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
-sudo apt-get install -y ffmpeg
+sudo apt-get install -y ffmpeg   # macOS: brew install ffmpeg
 ```
 
 Credentials: for the demos pipeline you only need an ElevenLabs key,
-either in `ELEVENLABS_API_KEY` or in SSM (see above). AWS credentials
+either in `ELEVENLABS_API_KEY` (environment or a `.env` file; copy
+`.env.example`) or in SSM (see above). AWS credentials
 (env or `~/.aws/credentials`, `AWS_REGION` defaults to `us-west-2`) are
 needed for the SSM fallback and for the legacy YAML pipeline, which uses
 Bedrock and Polly.

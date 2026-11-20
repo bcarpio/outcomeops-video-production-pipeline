@@ -8,44 +8,55 @@ replace those sections with your product's equivalents and keep the rest.
 
 ## What this tool is
 
-Standalone Python CLI that generates narrated marketing videos of real
-OutcomeOps surfaces (the marketing site at `outcomeops.ai` and the app
-at `outcomeops.outcomeops.ai`). Pipeline:
+A pipeline that turns text files into narrated product videos, with no
+video editor. The main path is **React demo scenes** in `demos/<name>/`:
 
 ```
-Claude Sonnet 4.6 (Bedrock) → narration text
-        ↓
-AWS Polly (Neural)          → narration.mp3
-        ↓
-Playwright (headless)       → recording.webm
-        ↓
-ffmpeg                      → final.mp4
+scene.jsx + narration.txt          you (or Claude Code) write these
+        ↓ scripts/synth.py         ElevenLabs /with-timestamps
+narration.mp3 + beats.js           voice-over + the second each beat starts
+        ↓ export_demo.py           headless Chromium, stepped frame by frame
+output/<name>/final.mp4            H.264, 60 fps by default
 ```
 
-Per scene, three files land in `output/<scene-name>/`:
-`narration.mp3`, `recording.webm`, `final.mp4`. Intermediates are kept
-on purpose so `--skip-narration` and `--skip-recording` let you iterate
-on one stage without re-running the others.
+Every scene is a small React app on one animation clock (`Stage` in
+`animations.jsx`); every visual is a pure function of the time from
+`useTime()`. The export steps that clock exactly 1/fps per frame and
+screenshots each frame, so output is frame-accurate and identical on
+every run.
+
+`demos/starter/` is the minimal scene to copy. The other folders in
+`demos/` are OutcomeOps' own videos, kept as worked examples.
+
+The older **YAML pipeline** (`generate.py`, `scenes/`) films a live
+website instead: Bedrock writes narration, Polly speaks it, Playwright
+records the real site. It still works but is legacy; see "Legacy
+pipeline" below.
 
 ## Repo layout
 
 ```
-generate.py                 — main CLI
-brand_context.md            — cached system prompt (edit for voice)
-scenes/                     — one YAML per scene
-lib/
-  script.py                 — Bedrock client + narration generation
-  narrator.py               — Polly TTS + ffprobe duration measurement
-  recorder.py               — Playwright video capture + interaction DSL
-  compositor.py             — ffmpeg stitching
+demos/<name>/               — one React scene per video
+  index.html                — mounts the Stage (loads beats.js if the scene uses it)
+  scene.jsx                 — the scene; compiled in the browser by Babel
+  animations.jsx            — Stage, useTime, Sprite, easing helpers
+  narration.txt             — voice-over with [[B0]]..[[Bn]] beat markers
+  beats.js                  — window.BEATS / SCENE_DURATION, written by synth.py
+demos/starter/              — minimal product-neutral scene to copy
+scripts/synth.py            — ElevenLabs synthesis for any scene
+scripts/synth_*.py          — per-scene synth scripts (OutcomeOps examples)
+scripts/screenshot_thumbnail.py — renders a scene's thumbnail.html to PNG
+export_demo.py              — frame-stepped export to MP4
+lib/compositor.py           — ffmpeg encoding (frames → MP4, recording → MP4)
+generate.py, scenes/, lib/{script,narrator,recorder}.py — legacy YAML pipeline
 output/                     — generated artifacts (gitignored)
-venv/                       — local virtualenv (gitignored)
 ```
 
 ## Secrets
 
 The scripts read the ElevenLabs key from the `ELEVENLABS_API_KEY`
-environment variable when it is set. Otherwise they fall back to **AWS
+environment variable when it is set (`scripts/synth.py` also reads it
+from a `.env` file in the repo root; `.env` is gitignored). Otherwise they fall back to **AWS
 SSM Parameter Store**, which is how this repo runs for OutcomeOps: keys
 live under `/outcomeops-video-gen/*` as `SecureString` parameters,
 fetched with `boto3` and the same AWS credentials the rest of the
@@ -88,9 +99,10 @@ When adding a new third-party key:
 - **Never put customer names in scene YAMLs that get committed.**
   Generic ICP language only.
 
-## How a scene works
+## Legacy pipeline: YAML scenes (`generate.py`)
 
-A scene YAML has:
+This section only applies to `generate.py`, which films a live site.
+New videos should use `demos/` scenes. A scene YAML has:
 
 | Field | Required | Notes |
 |---|---|---|
@@ -236,9 +248,14 @@ narrator. Polly is reserved for the Playwright-driven scenes under
 `scenes/` (`generate.py`). If you're writing a new demo scene with
 pre-rendered audio, default to ElevenLabs Drew.
 
-**API key:** SSM SecureString at `/outcomeops-video-gen/eleven-labs`.
-Fetch with the same boto3 pattern as any other SSM parameter — never
-`.env`, never hardcoded.
+**API key:** OutcomeOps keeps it in SSM at `/outcomeops-video-gen/eleven-labs`.
+For your own setup, `ELEVENLABS_API_KEY` in the environment or in `.env`
+works too (see "Secrets"). Never hardcode or commit it.
+
+**About Drew:** Drew is one of ElevenLabs' stock (premade) voices, not
+a custom clone, so anyone with an ElevenLabs account can use the same
+voice ID. Commercial use of generated audio needs a paid ElevenLabs
+plan; check their current terms.
 
 **Voice:** Drew, `voice_id=q0IMILNRPxOgtBTS4taI`, model
 `eleven_multilingual_v2`.
@@ -299,12 +316,14 @@ the user reports artifacts or if the pace adjustment exceeds 7%.
   `alignment.character_start_times_seconds` + `.characters` to locate
   beats in the audio and write them to `narration.marks.json`.
 
-**Marketing-specific duration trick:** `export_demo.py` uses
-`ffmpeg -shortest` so the output trims to whichever stream ends first.
-If the Stage runs longer than the narration (e.g., 42s video + 40s
-narration + 2s silent logo), pad the mp3 with `ffmpeg -af apad=whole_dur=<sec>`
-before export so the silent visual tail survives. Otherwise the CTA
-concat abuts the narration's last word instead of the logo hold.
+**Silent tail for an end card:** the export always runs for the
+scene's full duration and pads the narration with silence, so a logo
+hold after the last word survives. `scripts/synth.py --tail <sec>`
+sets how long that hold is (default 1.5 s).
+
+**Changing tempo after synthesis:** `atempo` changes when every beat
+lands. Divide the times in `beats.js` (and `SCENE_DURATION`) by the
+tempo factor, or re-synthesize.
 
 **Loop during export:** `<Stage>` defaults to `loop={true}`. For
 exports, pass `loop={!isExport}` so the playhead stops at `duration`
@@ -332,33 +351,46 @@ Claude Code shares URLs you can click instead of `localhost`.
 
 ## Exporting a demo to MP4
 
-`export_demo.py` records a `demos/*/` scene in headless Chromium and
-stitches it with the scene's `narration.mp3` into a shareable MP4.
+`export_demo.py` renders a `demos/*/` scene frame by frame in headless
+Chromium and encodes it with the scene's `narration.mp3`.
 
 ```bash
-# Default: 1920x1080 landscape → output/<demo>/final.mp4
-python export_demo.py demos/chat-analytics
+# Default: 1920x1080, 60 fps → output/<demo>/final.mp4
+python export_demo.py demos/starter
+
+# Quicker draft
+python export_demo.py demos/starter --fps 30
 
 # Vertical (TikTok, YouTube Shorts, Instagram Reels)
-# NB: Stage is designed for 16:10; vertical is letterboxed.
-python export_demo.py demos/chat-analytics --viewport 1080x1920
-
-# Custom output path
-python export_demo.py demos/chat-analytics --output /tmp/reel.mp4
+python export_demo.py demos/starter --viewport 1080x1920
 ```
 
-What it does:
-1. Starts a local HTTP server on a free port (no conflict with 8765)
-2. Launches headless Chromium with autoplay allowed + backgrounding
-   disabled (so the RAF loop keeps 60fps)
-3. `localStorage.clear()` via `add_init_script` so Stage starts at t=0
-4. Waits for the `<audio>` element to attach (means scene mounted)
-5. Records for `duration` seconds (parsed from the Stage's prop in
-   `index.html`), then stitches via `lib.compositor.stitch()` with the
-   page-load offset trimmed off the front.
+How it works:
+1. Serves `demos/` on a free local port and opens the scene with
+   `?export=1` (scenes use that to hide the playback bar).
+2. Installs Playwright's fake clock, paused, before any page script runs,
+   and clears `localStorage` so the Stage starts at t=0.
+3. For each frame: advances the clock by exactly 1/fps, runs the Stage's
+   animation-frame callback once at that time, waits for React to
+   commit, advances CSS animations/transitions by the same step, and
+   takes a PNG screenshot.
+4. Pipes the PNGs to ffmpeg (`lib.compositor.FrameEncoder`), with the
+   narration starting at frame 0. The file is exactly the scene's
+   duration: shorter audio is padded with silence.
 
-The MP4 is H.264 yuv420p + AAC 192kbps, `+faststart` for web streaming.
-Works directly on YouTube, LinkedIn, Slack, email attachments.
+Duration comes from `beats.js` (`window.SCENE_DURATION`) if the scene
+has one, otherwise from the numeric `duration={...}` on the Stage in
+`index.html`; `--duration` overrides both. Rendering takes about 0.1 s
+per frame (roughly 6 minutes for 60 s at 60 fps). Output is identical
+on every run.
+
+Drive all motion from `useTime()`. CSS animations and transitions are
+stepped too, but anything that reads wall-clock time some other way
+(a `<video>` element, a canvas loop on its own timer) won't be in sync.
+
+The MP4 is H.264 yuv420p (BT.709, limited range, tagged) + AAC 192kbps,
+`+faststart` for web streaming. Works directly on YouTube, LinkedIn,
+Slack and email.
 
 **Platform notes:**
 | Platform | Preferred format | Our default |
@@ -374,33 +406,50 @@ vertical-native scene layout, not a crop.
 
 ## Common tasks
 
-**Add a new YAML scene (legacy pipeline):** copy `scenes/example.yaml`, change `name`, `url`,
+**New video:** `cp -r demos/starter demos/<name>`, edit `scene.jsx` and
+`narration.txt`, preview at `http://localhost:8765/demos/<name>/`, then
+`python scripts/synth.py demos/<name>/narration.txt` and
+`python export_demo.py demos/<name>`.
+
+**Iterate on visuals:** edit `scene.jsx` and reload the preview. No
+synthesis or export needed until the visuals are right.
+
+**Change the narration:** edit `narration.txt` and re-run
+`scripts/synth.py`. It rewrites `narration.mp3` and `beats.js`, so the
+scene's timings follow the new voice-over automatically.
+
+**Use a different voice:** `scripts/synth.py ... --voice <voice_id>`
+(plus `--speed`, `--stability`, `--similarity`, `--style`).
+
+**Draft export:** `python export_demo.py demos/<name> --fps 30`.
+
+**Thumbnail:** design `demos/<name>/thumbnail.html`, then
+`python scripts/screenshot_thumbnail.py demos/<name>/thumbnail.html output/<name>/thumbnail.png`.
+
+### Legacy YAML pipeline
+
+**Add a YAML scene:** copy `scenes/example.yaml`, change `name`, `url`,
 and `narration_prompt`. Run `python generate.py scenes/<new>.yaml`.
+`--skip-narration` reuses the audio, `--skip-recording` reuses the
+video, and `--headed` shows the browser while you find selectors.
 
-**Iterate on visuals only:** `--skip-narration` reuses existing audio.
-You can tweak `interactions` and re-record without re-generating the
-script.
-
-**Iterate on script only:** `--skip-recording` reuses existing video.
-Useful when adjusting word choice without paying for another browser
-recording.
-
-**Watch the recording happen:** `--headed` opens a visible Chromium
-window. Useful when figuring out which CSS selector to click.
-
-**Change voice:** add `voice: Matthew` (or `Stephen`, `Ruth`, ...) to
-the scene YAML. Any AWS Polly Neural voice works.
-
-**Longer-than-3000-char script:** Polly Neural caps at 3000 chars per
-request. For multi-minute videos, split into multiple scenes and
-concatenate the MP4s with ffmpeg's concat demuxer.
+**Change the Polly voice:** add `voice: Matthew` (or `Stephen`, `Ruth`,
+...) to the scene YAML; the default is `Joanna`. Polly Neural caps a
+request at 3000 characters, so split long scripts across scenes.
 
 ## Testing changes
 
-There are no unit tests yet — the failure modes are obvious (missing
-deps, Bedrock model not enabled, Polly access denied, selector not
-found). A smoke test is `python generate.py scenes/example.yaml`; if
-it produces a non-zero `final.mp4`, the pipeline is working.
+There are no unit tests yet. Smoke test for the demos pipeline, with no
+API key needed (a silent track stands in for narration):
+
+```bash
+ffmpeg -f lavfi -i anullsrc=r=44100:cl=stereo -t 20 -c:a libmp3lame demos/starter/narration.mp3
+python export_demo.py demos/starter --fps 30
+```
+
+It should write a 20-second `output/starter/final.mp4`. Delete the
+silent `narration.mp3` afterwards. For the legacy pipeline, the smoke
+test is `python generate.py scenes/example.yaml`.
 
 If adding tests, mock the boto3 + anthropic clients at the module
 boundary (`lib.script._get_client`, `lib.narrator._polly_client`) the

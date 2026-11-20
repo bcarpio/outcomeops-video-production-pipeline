@@ -1,26 +1,35 @@
 #!/usr/bin/env python3
-"""Export a ``demos/<name>/`` React scene to a shareable MP4.
+"""Export a ``demos/<name>/`` React scene to a shareable MP4, frame by frame.
 
-Headless Chromium loads the scene over a local HTTP server, records the
-viewport for the Stage's duration, then ffmpeg stitches the recording
-with the scene's ``narration.mp3`` and trims any page-load prefix.
+Headless Chromium loads the scene with Playwright's fake clock installed and
+paused. For every output frame the exporter advances the clock by exactly
+1/fps of a second (which drives the Stage's requestAnimationFrame loop), lets
+React commit, advances any CSS animations and transitions by the same amount,
+and takes a lossless screenshot. ffmpeg encodes the PNG frames with the
+scene's ``narration.mp3`` starting at t=0.
 
-Default output: 1920x1080 MP4 under ``output/<demo>/final.mp4`` — ready
-to upload to YouTube or LinkedIn.
+Because nothing depends on wall-clock time, the output is a true N fps,
+has no lossy intermediate recording, keeps audio in exact sync, and is the
+same on every run regardless of how fast the machine is. Rendering takes
+roughly 0.1 s per frame (about 6 minutes for a 60-second video at 60 fps);
+use ``--fps 30`` for quicker drafts.
+
+Default output: 1920x1080, 60 fps MP4 under ``output/<demo>/final.mp4``.
 
 Usage:
-    python export_demo.py demos/chat-analytics
-    python export_demo.py demos/chat-analytics --viewport 1080x1920
-    python export_demo.py demos/chat-analytics --output /tmp/out.mp4
+    python export_demo.py demos/starter
+    python export_demo.py demos/starter --fps 30
+    python export_demo.py demos/starter --viewport 1080x1920
+    python export_demo.py demos/starter --output /path/to/out.mp4
 """
 
 from __future__ import annotations
 
 import argparse
+import functools
 import http.server
 import logging
 import re
-import shutil
 import socket
 import socketserver
 import sys
@@ -30,10 +39,54 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-from lib.compositor import stitch
+from lib.compositor import FrameEncoder
 
 REPO_ROOT = Path(__file__).resolve().parent
 log = logging.getLogger(__name__)
+
+# Clock time the fake clock starts at, in ms. Any fixed value works; it only
+# has to be the same on every run.
+CLOCK_START_MS = 1_000
+
+# Playwright's fake clock fires requestAnimationFrame on its own fixed 16 ms
+# grid, which would quantize the Stage's clock and make frames judder. Instead,
+# rAF callbacks are queued here and run by STEP_JS exactly once per frame, with
+# the frame's exact timestamp. Installed after the fake clock, so it wins.
+RAF_JS = """
+(() => {
+  const queue = new Map(); let next = 0;
+  window.__exportRaf = queue;
+  window.requestAnimationFrame = (cb) => { next += 1; queue.set(next, cb); return next; };
+  window.cancelAnimationFrame = (id) => { queue.delete(id); };
+})();
+"""
+
+# Runs once per frame, after the fake clock has advanced by dt:
+#  1. Run the queued animation-frame callbacks (the Stage's clock) once, at
+#     the current fake time.
+#  2. Wait for React to commit. Its scheduler uses MessageChannel, not the
+#     faked timers, so a few channel round trips let the render finish.
+#  3. Advance CSS animations and transitions by the same step. They run on
+#     the compositor's real clock, so each one is paused and seeked by hand:
+#     a new animation is held at 0, an existing one moves forward by dt.
+STEP_JS = """
+async (dt) => {
+  const flush = () => new Promise(r => {
+    const c = new MessageChannel(); c.port1.onmessage = () => r(); c.port2.postMessage(0);
+  });
+  const ts = performance.now();
+  const due = [...window.__exportRaf.entries()];
+  window.__exportRaf.clear();
+  for (const [, cb] of due) cb(ts);
+  for (let i = 0; i < 4; i++) await flush();
+  const seen = (window.__exportSeenAnimations ||= new WeakSet());
+  for (const a of document.getAnimations()) {
+    if (!seen.has(a)) { seen.add(a); a.pause(); a.currentTime = 0; continue; }
+    a.pause();
+    a.currentTime = (a.currentTime || 0) + dt;
+  }
+}
+"""
 
 
 def free_port() -> int:
@@ -45,79 +98,75 @@ def free_port() -> int:
 def duration_from_index(index_html: Path) -> float:
     """Parse Stage's ``duration={...}`` prop from index.html."""
     text = index_html.read_text(encoding="utf-8")
-    m = re.search(r"duration=\{(\d+(?:\.\d+)?)\}", text)
+    # Accepts duration={42.5} and duration={window.SCENE_DURATION || 42.5}.
+    m = re.search(r"duration=\{[^}]*?(\d+(?:\.\d+)?)\s*\}", text)
     if not m:
-        raise ValueError(f"could not find Stage duration in {index_html}")
+        raise ValueError(f"could not find a numeric Stage duration={{...}} in {index_html}")
     return float(m.group(1))
+
+
+def duration_from_beats(demo_dir: Path) -> float | None:
+    """Read ``window.SCENE_DURATION`` from a beats.js written by scripts/synth.py."""
+    beats = demo_dir / "beats.js"
+    if not beats.exists():
+        return None
+    m = re.search(r"window\.SCENE_DURATION\s*=\s*(\d+(?:\.\d+)?)", beats.read_text(encoding="utf-8"))
+    return float(m.group(1)) if m else None
 
 
 def serve_directory(directory: Path, port: int) -> socketserver.TCPServer:
     """Start a quiet threaded HTTP server serving ``directory`` on ``port``."""
     class Handler(http.server.SimpleHTTPRequestHandler):
-        def __init__(self, *a, **kw):
-            super().__init__(*a, directory=str(directory), **kw)
         def log_message(self, *a, **kw):
             pass
 
-    server = socketserver.TCPServer(("127.0.0.1", port), Handler)
+    server = socketserver.ThreadingTCPServer(
+        ("127.0.0.1", port), functools.partial(Handler, directory=str(directory)))
+    server.daemon_threads = True
     threading.Thread(target=server.serve_forever, daemon=True).start()
     return server
 
 
-def record_scene(
-    url: str,
-    viewport: dict[str, int],
-    duration: float,
-    tmp_dir: Path,
-) -> tuple[Path, float]:
-    """Record ``duration`` seconds of the scene at ``url``.
-
-    Clears the Stage's persisted playhead in localStorage before any page
-    script runs so the recording always starts at t=0. Returns the webm
-    path and the page-load offset (seconds to trim from the front of the
-    recording before stitching with audio).
-    """
-    tmp_dir.mkdir(parents=True, exist_ok=True)
-
+def render_frames(url: str, viewport: dict[str, int], duration: float, fps: int, encoder: FrameEncoder) -> int:
+    """Step the scene frame by frame and hand each PNG to ``encoder``."""
+    total = round(duration * fps)
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(
-            headless=True,
-            args=[
-                "--autoplay-policy=no-user-gesture-required",
-                "--disable-renderer-backgrounding",
-                "--disable-backgrounding-occluded-windows",
-            ],
-        )
-        ctx = browser.new_context(
-            viewport=viewport,
-            record_video_dir=str(tmp_dir),
-            record_video_size=viewport,
-        )
-        # Wipe Stage's persisted playhead before Stage mounts — guarantees
-        # recording starts at t=0 regardless of any prior browsing.
+        browser = pw.chromium.launch(headless=True, args=["--autoplay-policy=no-user-gesture-required"])
+        ctx = browser.new_context(viewport=viewport)
+        # Stage persists its playhead in localStorage; clear it so every
+        # export starts at t=0.
         ctx.add_init_script("try { localStorage.clear(); } catch (e) {}")
-
         page = ctx.new_page()
 
-        goto_start = time.monotonic()
+        # Fake clock, paused before any page script runs: Date, timers,
+        # performance.now and requestAnimationFrame only move when we say so.
+        page.clock.install(time=0)
+        page.clock.pause_at(CLOCK_START_MS)
+        page.add_init_script(RAF_JS)
+
         page.goto(url, wait_until="load", timeout=60000)
-        # Give Babel/React a moment to compile and mount the scene.
-        page.wait_for_selector("audio", state="attached", timeout=10000)
-        content_start = time.monotonic() - goto_start
-        log.info(
-            "page loaded + scene mounted in %.2fs; recording %.1fs of content",
-            content_start, duration,
-        )
+        page.wait_for_selector("audio", state="attached", timeout=30000)
+        page.evaluate("() => document.fonts.ready.then(() => true)")
 
-        time.sleep(duration + 0.3)
+        # Prime one frame: the Stage's first animation frame only records its
+        # start timestamp, so frame 0 is the scene at exactly t=0.
+        page.evaluate(STEP_JS, 0)
 
-        video = page.video
-        ctx.close()
+        started, elapsed_ms = time.monotonic(), 0
+        for i in range(total):
+            if i:
+                target_ms = round(i * 1000 / fps)
+                dt = target_ms - elapsed_ms
+                page.clock.run_for(dt)
+                page.evaluate(STEP_JS, dt)
+                elapsed_ms = target_ms
+            encoder.write(page.screenshot(type="png"))
+            if (i + 1) % (fps * 5) == 0 or i + 1 == total:
+                rate = (i + 1) / (time.monotonic() - started)
+                log.info("frame %d/%d (%.1fs of video, %.1f frames/s, ~%ds left)",
+                         i + 1, total, (i + 1) / fps, rate, (total - i - 1) / rate)
         browser.close()
-
-        if video is None:
-            raise RuntimeError("playwright did not produce a video")
-        return Path(video.path()), content_start
+    return total
 
 
 def main() -> int:
@@ -127,12 +176,13 @@ def main() -> int:
                     help="Output MP4 (default: output/<demo>/final.mp4)")
     ap.add_argument("--viewport", default="1920x1080",
                     help="Viewport WxH (default: 1920x1080)")
+    ap.add_argument("--fps", type=int, default=60, help="Frames per second (default: 60)")
     ap.add_argument("--audio", type=Path, default=None,
                     help="Audio file (default: <demo>/narration.mp3)")
     ap.add_argument("--query", default="",
-                    help="Extra URL query string appended after ?export=1 (e.g. 'variant=cve')")
+                    help="Extra URL query string appended after ?export=1 (e.g. 'variation=A')")
     ap.add_argument("--duration", type=float, default=None,
-                    help="Override Stage duration in seconds (default: parse from index.html)")
+                    help="Override the duration in seconds (default: beats.js, else index.html)")
     ap.add_argument("-v", "--verbose", action="store_true")
     args = ap.parse_args()
 
@@ -150,7 +200,7 @@ def main() -> int:
         sys.exit(f"missing {index_html}")
     audio = args.audio or (demo_dir / "narration.mp3")
     if not audio.exists():
-        sys.exit(f"missing audio: {audio}")
+        sys.exit(f"missing audio: {audio} (run scripts/synth.py first, or pass --audio)")
 
     output = args.output or (REPO_ROOT / "output" / demo_dir.name / "final.mp4")
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -158,37 +208,19 @@ def main() -> int:
     w, h = map(int, args.viewport.split("x"))
     viewport = {"width": w, "height": h}
 
-    if args.duration is not None:
-        duration = args.duration
-        log.info("Stage duration: %.1fs (override)", duration)
-    else:
-        duration = duration_from_index(index_html)
-        log.info("Stage duration: %.1fs", duration)
+    duration = args.duration or duration_from_beats(demo_dir) or duration_from_index(index_html)
+    log.info("duration %.2fs at %d fps = %d frames", duration, args.fps, round(duration * args.fps))
 
     # Serve demos/ as the web root so relative paths inside the scene work.
-    serve_root = demo_dir.parent
     port = free_port()
-    server = serve_directory(serve_root, port)
-    log.info("serving %s on port %s", serve_root, port)
-
+    server = serve_directory(demo_dir.parent, port)
     try:
-        # ?export=1 lets the scene switch to a 16:9 full-bleed layout
-        # (no playback bar, width tuned for zero letterboxing at 1920x1080).
+        # ?export=1 lets the scene switch to its export layout (no playback bar).
         extra = f"&{args.query}" if args.query else ""
         url = f"http://127.0.0.1:{port}/{demo_dir.name}/?export=1{extra}"
-        tmp_dir = output.parent / "_export_tmp"
-
-        webm_path, content_start = record_scene(url, viewport, duration, tmp_dir)
-        log.info("recorded %s (will trim %.2fs from front)", webm_path, content_start)
-
-        stitch(
-            video=webm_path,
-            audio=audio,
-            output=output,
-            video_start=content_start,
-        )
-        shutil.rmtree(tmp_dir, ignore_errors=True)
-        log.info("done — %s", output)
+        with FrameEncoder(output=output, fps=args.fps, audio=audio, duration=duration) as encoder:
+            frames = render_frames(url, viewport, duration, args.fps, encoder)
+        log.info("done: %s (%d frames)", output, frames)
         return 0
     finally:
         server.shutdown()

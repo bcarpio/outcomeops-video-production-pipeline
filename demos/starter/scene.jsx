@@ -5,15 +5,11 @@
 //
 // 1. Write narration.txt with [[B0]]..[[Bn]] markers.
 // 2. python scripts/synth.py demos/<name>/narration.txt
-// 3. Paste the BEATS it prints over the placeholder below, and set duration in index.html.
+//    It writes narration.mp3 and beats.js; index.html loads beats.js before
+//    this file, so the timings below come from the real voice-over.
 
-// Placeholder beat times (seconds). scripts/synth.py prints the real ones.
-const BEATS = {
-  "B0": 0.00,
-  "B1": 4.20,
-  "B2": 9.60,
-  "B3": 14.80,
-};
+// Beat start times in seconds, from beats.js.
+const BEATS = window.BEATS;
 
 // Palette. When this scene imitates your product's UI, take these values from
 // the product's own styles (its Tailwind classes, CSS variables or theme), and
