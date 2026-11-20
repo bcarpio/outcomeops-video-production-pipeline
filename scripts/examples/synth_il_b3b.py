@@ -1,11 +1,8 @@
-"""Re-synth b8 for intelligence-layer demo with the expanded output examples.
+"""Synth b3b for intelligence-layer demo (AI coding agents on the substrate).
 
-Original b8 narrated only "sprint backlog" as the example. The pillar's
-message ("same corpus, different answer shapes") needs more than one
-example to land. Extended to four formats per audience.
-
-Drew @ 1.1, standard settings. Overwrites _synth/b8.mp3.
+Drew @ 1.1, standard settings. Writes _synth/b3b.mp3.
 """
+import base64
 import json
 import os
 import urllib.request
@@ -24,16 +21,15 @@ SETTINGS = {
 }
 
 TEXT = (
-    "The output isn't search results. The platform pulls only what's "
-    "relevant -- code, standards, decision records -- and reconciles them "
-    "in one pass. The reader gets the answer, not the homework. The same "
-    "pipeline can turn that answer into a sprint backlog for engineering, "
-    "a compliance document for security, a runbook for ops, a "
-    "change-impact summary for compliance. Same corpus. Different "
-    "answer shapes."
+    "And it's not just humans asking. Every A I coding agent in the "
+    "organization -- Cursor, Claude Code, Copilot -- gets fed from the "
+    "same substrate. The whole organization shares one corpus. This is "
+    "the antithesis of the local optimization trap, where every team "
+    "builds their own private context. One source of truth. Every "
+    "consumer, human and machine."
 )
 
-OUT = Path(__file__).resolve().parents[1] / "demos/intelligence-layer/_synth/b8.mp3"
+OUT = Path(__file__).resolve().parents[2] / "demos/intelligence-layer/_synth/b3b.mp3"
 
 
 def get_api_key() -> str:

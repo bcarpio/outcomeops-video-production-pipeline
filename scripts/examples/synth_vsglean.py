@@ -16,8 +16,8 @@ endpoint. The script:
      REFRAME_IN, CTA_IN, TOTAL, ...).
 
 Usage:
-    python scripts/synth_vsglean.py                       # default narration.txt
-    python scripts/synth_vsglean.py demos/vs-glean/narration.txt
+    python scripts/examples/synth_vsglean.py                       # default narration.txt
+    python scripts/examples/synth_vsglean.py demos/vs-glean/narration.txt
 """
 import base64
 import json
@@ -42,7 +42,7 @@ SETTINGS = {
 SEP = "\n\n"          # what beats are joined with when sent to ElevenLabs
 TAIL_SECONDS = 1.5    # silent hold on the logo end-card after the last word
 
-DEFAULT_TXT = Path(__file__).resolve().parent.parent / "demos" / "vs-glean" / "narration.txt"
+DEFAULT_TXT = Path(__file__).resolve().parents[2] / "demos" / "vs-glean" / "narration.txt"
 
 
 def parse_beats(text: str):

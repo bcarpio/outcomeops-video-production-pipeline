@@ -45,7 +45,8 @@ demos/<name>/               — one React scene per video
   beats.js                  — window.BEATS / SCENE_DURATION, written by synth.py
 demos/starter/              — minimal product-neutral scene to copy
 scripts/synth.py            — ElevenLabs synthesis for any scene
-scripts/synth_*.py          — per-scene synth scripts (OutcomeOps examples)
+scripts/concat.py           — joins exported scenes (multi-part videos, CTAs)
+scripts/examples/           — per-scene synth scripts (OutcomeOps examples)
 scripts/screenshot_thumbnail.py — renders a scene's thumbnail.html to PNG
 export_demo.py              — frame-stepped export to MP4
 lib/compositor.py           — ffmpeg encoding (frames + narration → MP4)
@@ -290,7 +291,7 @@ tempo factor, or re-synthesize.
 exports, pass `loop={!isExport}` so the playhead stops at `duration`
 instead of wrapping to scene 1 for the last couple of frames — that
 wrap is visible in the final MP4 as a flash of scene 1 right before
-the CTA stitch.
+the CTA is joined on with `scripts/concat.py`.
 
 ## Serving the React demos
 
@@ -361,9 +362,12 @@ Slack and email.
 | LinkedIn (square) | 1080×1080 | `--viewport 1080x1080` |
 | TikTok / YT Shorts | 1080×1920 | `--viewport 1080x1920` (letterboxed) |
 
-The `demos/` scenes are designed 16:10, so vertical/square variants
-will letterbox. If those become important, the right move is a
-vertical-native scene layout, not a crop.
+The Stage's `width`×`height` is a design size that gets scaled to fit
+the viewport, letterboxed when the aspect ratios differ. The starter is
+1600×900 (16:9), so it fills a 1920×1080 export exactly; the OutcomeOps
+scenes vary (1920×1080, 1600×900, and some 1440×900 previews), and all
+of them letterbox in vertical or square exports. For vertical video,
+design a vertical scene (e.g. a 900×1600 Stage) rather than cropping.
 
 ## Common tasks
 

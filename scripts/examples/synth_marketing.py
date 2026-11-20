@@ -1,8 +1,8 @@
 """Synthesize a marketing narration mp3 via ElevenLabs Drew at speed 1.1.
 
 Usage:
-    python scripts/synth_marketing.py demos/marketing/narration-C.txt
-    python scripts/synth_marketing.py demos/marketing/narration-G.txt
+    python scripts/examples/synth_marketing.py demos/marketing/narration-C.txt
+    python scripts/examples/synth_marketing.py demos/marketing/narration-G.txt
 
 Reads a [t — beat_id]-tagged narration file, strips the markers, sends the
 prose to ElevenLabs, writes <input>.replace('.txt', '.mp3').

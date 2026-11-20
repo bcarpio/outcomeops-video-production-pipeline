@@ -31,17 +31,22 @@ Everything in `demos/` except `demos/starter/` is OutcomeOps' own
 material, kept as worked examples. To make a video for your product:
 
 1. Follow **Setup** below.
-2. Copy the starter scene: `cp -r demos/starter demos/my-video`. It is
+2. If you'll use Claude Code, replace OutcomeOps' manual with the
+   template first: `cp CLAUDE.template.md CLAUDE.md`, then fill in your
+   product (see below). Otherwise the agent follows OutcomeOps' voice,
+   brand and paths.
+3. Copy the starter scene: `cp -r demos/starter demos/my-video`. It is
    product-neutral: a title, a typed question, an answer that builds
    line by line, and an end card.
-3. Serve the repo (`python3 -m http.server 8765`) and open
+4. Serve the repo (`python3 -m http.server 8765`) and open
    `http://localhost:8765/demos/my-video/`. Edit `scene.jsx` until the
    visuals are right. No audio is needed yet, so this costs nothing.
-4. Write `narration.txt` with a `[[B0]]`, `[[B1]]`, ... marker on its
+5. Write `narration.txt` with a `[[B0]]`, `[[B1]]`, ... marker on its
    own line before each beat, one beat per visual moment. ElevenLabs has
    a per-request character limit (see their docs for your model), so
-   split a long video into several scenes rather than one huge script.
-5. Synthesize the voice and the timings:
+   split a long video into several scenes rather than one huge script
+   (join them afterwards, see "Longer videos and CTAs").
+6. Synthesize the voice and the timings:
    ```bash
    ELEVENLABS_API_KEY=... python scripts/synth.py demos/my-video/narration.txt
    ```
@@ -51,12 +56,45 @@ material, kept as worked examples. To make a video for your product:
    long as the voice-over, with nothing to copy. Motion *inside* a beat
    (fades, typing, rows appearing) is still yours: the starter expresses
    it as fractions of each beat's length so a re-recorded line reflows,
-   and a new `[[B4]]` needs its own visual in `scene.jsx`. The default voice is Drew, one of ElevenLabs' stock
-   voices; pass `--voice <voice_id>` to use another. Commercial use of
+   and a new `[[B4]]` needs its own visual in `scene.jsx`. The default
+   voice is Drew, one of ElevenLabs' stock voices; pass `--voice <voice_id>` to use another. Commercial use of
    the audio needs a paid ElevenLabs plan.
-6. Export: `python export_demo.py demos/my-video` writes
+7. Export: `python export_demo.py demos/my-video` writes
    `output/my-video/final.mp4` (1920x1080, 60 fps). Use `--fps 30`
    for quicker drafts.
+
+### Longer videos and CTAs
+
+Export each scene separately with the same `--fps` and `--viewport`,
+then join them in order. The join copies the streams, so it's lossless
+and takes seconds:
+
+```bash
+python scripts/concat.py output/part-1/final.mp4 output/part-2/final.mp4 \
+    --output output/my-video/full.mp4
+# A shared call to action, kept as its own scene, appended to any video:
+python scripts/concat.py output/my-video/final.mp4 output/cta/final.mp4 \
+    --output output/my-video/with-cta.mp4
+```
+
+### Scene API (`animations.jsx`)
+
+Each scene folder carries a copy of `animations.jsx`. What a scene uses:
+
+| Name | What it does |
+|---|---|
+| `<Stage width height duration background loop hideBar persistKey>` | The canvas and its single clock. `width`×`height` is your design size; it's scaled to fit the browser or the export viewport, letterboxed if the aspect ratios differ (the starter's 1600×900 fills 1920×1080 exactly). Pass `hideBar` and `loop={false}` when `?export=1` is in the URL. |
+| `useTime()` | Current time in seconds. Compute everything from it. |
+| `useTimeline()` | `{ time, duration, playing }`. |
+| `<Sprite start end>` | Renders its children only between `start` and `end` seconds; children can read `useSprite()` for `{ localTime, progress, duration }`. |
+| `TextSprite`, `ImageSprite`, `RectSprite` | Ready-made sprites with entry and exit motion, for use inside a `Sprite`. |
+| `Easing` | `linear`, plus in/out/inOut variants of `Quad`, `Cubic`, `Quart`, `Expo`, `Sine`, `Back`, and `easeOutElastic`. All map 0..1 to 0..1. |
+| `interpolate(inputs, outputs, ease)` | Keyframes: returns `t => value` across several stops. |
+| `animate({ from, to, start, end, ease })` | One tween: returns `t => value`. |
+| `clamp(v, min, max)` | Clamp a number. |
+
+`demos/starter/scene.jsx` also shows the small helpers most scenes want
+(`fade`, typed text, beat-relative timing with `at()` and `span()`).
 
 To have Claude Code build scenes for you, copy `CLAUDE.template.md` over
 `CLAUDE.md` and fill in your product: where its UI source lives, its
@@ -67,7 +105,8 @@ way you would describe the video to an editor.
 The other folders in `demos/` are the real scenes behind the published
 OutcomeOps videos, with staged data only. They are worked examples, not
 templates: they span the layouts this pipeline grew through (`scene.jsx`
-vs `scenes.jsx`, several narration files, one-off `scripts/synth_*.py`),
+vs `scenes.jsx`, several narration files, one-off scripts in
+`scripts/examples/`),
 and some palettes are admitted approximations of the app. Copy
 `demos/starter/`, and read the others for ideas.
 
@@ -130,8 +169,9 @@ The flow, in order:
    browser at `http://localhost:8765/demos/<name>/`. Layout tweaks
    are free; synthesis is not.
 2. **Narration.** Write `narration.txt` with `[[BEAT]]` markers.
-   `scripts/synth.py` (or a per-scene `scripts/synth_*.py`, kept as
-   examples of scenes with special timing needs) sends it to ElevenLabs
+   `scripts/synth.py` (or one of the per-scene scripts in
+   `scripts/examples/`, kept as examples of scenes with special timing
+   needs) sends it to ElevenLabs
    (Drew, `q0IMILNRPxOgtBTS4taI`, `eleven_multilingual_v2`, speed 1.1)
    via the `/with-timestamps` endpoint, maps each beat's character
    offset to a timestamp, writes `narration.mp3` +
@@ -162,12 +202,15 @@ requirement. Whichever you use, never hardcode or commit the key.
 ```bash
 git clone https://github.com/bcarpio/outcomeops-video-production-pipeline.git
 cd outcomeops-video-production-pipeline
-python3.12 -m venv venv
+python3 -m venv venv              # Python 3.10 or newer
 source venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
 sudo apt-get install -y ffmpeg   # macOS: brew install ffmpeg
 ```
+
+macOS: install Python 3 and ffmpeg with Homebrew; everything else is the
+same. Windows: use WSL2 (Ubuntu) and follow the Linux steps.
 
 Previews and exports need internet access: each scene's `index.html`
 loads React, ReactDOM and Babel from unpkg.com and its fonts from Google

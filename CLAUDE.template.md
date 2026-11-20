@@ -55,6 +55,14 @@ templates.
 4. `python scripts/synth.py demos/<name>/narration.txt` (costs ElevenLabs
    credits). Re-run it whenever the narration changes.
 5. `python export_demo.py demos/<name>` (`--fps 30` for drafts).
+6. To join scenes (a multi-part video, or a call-to-action scene on the
+   end): `python scripts/concat.py a.mp4 b.mp4 --output out.mp4`, with
+   every part exported at the same `--fps` and `--viewport`.
+
+The Stage's `width`×`height` is a design size scaled to fit the export
+viewport; the starter's 1600×900 fills 1920×1080. The scene API
+(`useTime`, `Sprite`, `Easing`, `interpolate`, ...) is listed in the
+README under "Scene API".
 
 The ElevenLabs key comes from `ELEVENLABS_API_KEY` in the environment or in
 `.env` in the repo root. Previews and exports need internet access: scenes

@@ -13,8 +13,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-TMP = Path(__file__).resolve().parents[1] / "demos/openai-bedrock-power/_synth"
-OUT = Path(__file__).resolve().parents[1] / "demos/openai-bedrock-power/narration.mp3"
+TMP = Path(__file__).resolve().parents[2] / "demos/openai-bedrock-power/_synth"
+OUT = Path(__file__).resolve().parents[2] / "demos/openai-bedrock-power/narration.mp3"
 
 BEATS = ["b1", "b2", "b2b", "b3", "b4", "b5", "b6"]
 

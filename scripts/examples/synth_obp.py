@@ -1,7 +1,7 @@
 """Synth all 7 beats for openai-bedrock-power via ElevenLabs Drew.
 
 Beats land in demos/openai-bedrock-power/_synth/<beat>.mp3. Run once;
-re-run an individual beat by passing its tag (e.g. `python scripts/synth_obp.py b4`).
+re-run an individual beat by passing its tag (e.g. `python scripts/examples/synth_obp.py b4`).
 
 Drew @ 1.1, standard settings. Per CLAUDE.md the ElevenLabs API key
 lives in SSM SecureString at /outcomeops-video-gen/eleven-labs.
@@ -24,7 +24,7 @@ SETTINGS = {
     "speed": 1.1,
 }
 
-OUT_DIR = Path(__file__).resolve().parents[1] / "demos/openai-bedrock-power/_synth"
+OUT_DIR = Path(__file__).resolve().parents[2] / "demos/openai-bedrock-power/_synth"
 
 BEATS = {
     "b1": (
