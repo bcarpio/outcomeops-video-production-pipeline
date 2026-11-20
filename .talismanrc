@@ -8,6 +8,8 @@ threshold: high
 allowed_patterns:
   # Subresource Integrity hashes on the pinned React/Babel CDN <script> tags.
   - 'integrity="sha384-[A-Za-z0-9+/=]+"'
+  # GitHub Actions pinned to full commit SHAs in .github/workflows.
+  - 'uses: [A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+@[0-9a-f]{40}'
   # Fake OutcomeOps API key used as staged data in the mcp-setup demo
   # (shown on screen in the published video). Not a real credential.
   - 'ooa_4f7a829d3e6b1c8f5a92b7d40e6c1f8a3b9d2e7c'
