@@ -285,7 +285,8 @@ python3 -m http.server 8765
 ```
 
 - Live preview: `http://localhost:8765/demos/chat-analytics/`
-- Exported MP4: `http://localhost:8765/output/chat-analytics/final.mp4`
+- Exported MP4 (only after `export_demo.py` has run; the repo ships no
+  MP4s): `http://localhost:8765/output/chat-analytics/final.mp4`
 
 If you run this on a separate machine and view it from your desktop,
 put the machine's LAN address in a local, untracked CLAUDE.md note so

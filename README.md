@@ -114,10 +114,15 @@ is fetched from SSM with those same credentials.
 
 ## Serving previews
 
-Always serve from the repo root so both `demos/` and `output/` resolve:
+Serve from the repo root. The scenes are compiled in the browser by
+Babel, so they need HTTP, not `file://`:
 
 ```bash
 python3 -m http.server 8765
-# http://localhost:8765/demos/<n>/  — live scene preview
-# http://localhost:8765/output/<n>/final.mp4
+# http://localhost:8765/             — catalog of every scene
+# http://localhost:8765/demos/<n>/   — live scene preview (silent until you synthesize narration)
 ```
+
+The repo ships no MP4s. `output/` is created when you run
+`export_demo.py`, and the exported file is then at
+`http://localhost:8765/output/<n>/final.mp4`.
